@@ -651,7 +651,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   double absolute;
   double clock = m_pClock->GetClock(absolute);
   double error = m_dvdAudio.GetPlayingPts() - clock;
-  double threshold1 = DVD_MSEC_TO_TIME(100);
+  double threshold1 = DVD_MSEC_TO_TIME(250);
   double threshold2 = DVD_MSEC_TO_TIME(50);
 
   // adjust thresholds
