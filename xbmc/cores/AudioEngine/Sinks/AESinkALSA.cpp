@@ -671,27 +671,55 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   unsigned int sampleRate   = inconfig.sampleRate;
 
 #if defined(HAS_LIBAMCODEC)
-  // alsa/kernel lies, so map everything to 44100 or 48000
-  switch(sampleRate)
-  {
-    case 5512:
-    case 11025:
-    case 22050:
-    case 88200:
-    case 176400:
-      sampleRate = 44100;
-      break;
-    case 8000:
-    case 16000:
-    case 24000:
-    case 32000:
-    case 64000:
-    case 96000:
-    case 192000:
-    case 384000:
-      sampleRate = 48000;
-      break;
-  }
+  if (aml_get_device_type() != AML_DEVICE_TYPE_UNKNOWN
+    && aml_get_device_type() >= AML_DEVICE_TYPE_M6)
+    {
+       // M6 or Newer - Remap non-working sample rates
+       switch(sampleRate)
+       {
+         case 5512:
+         case 11025:
+         case 22050:
+           sampleRate = 44100;
+           break;
+         case 176400:
+           sampleRate = 88200;
+           break;
+         case 8000:
+         case 16000:
+         case 24000:
+         case 32000:
+           sampleRate = 48000;
+           break;
+         case 384000:
+           sampleRate = 192000;
+           break;
+       }
+    }
+  else
+    {
+       // M3 or Older - Map everything to 44100 or 48000
+       switch(sampleRate)
+       {
+         case 5512:
+         case 11025:
+         case 22050:
+         case 88200:
+         case 176400:
+           sampleRate = 44100;
+           break;
+         case 8000:
+         case 16000:
+         case 24000:
+         case 32000:
+         case 64000:
+         case 96000:
+         case 192000:
+         case 384000:
+           sampleRate = 48000;
+           break;
+       }
+    }
 #endif
 
   snd_pcm_hw_params_set_rate_near    (m_pcm, hw_params, &sampleRate, NULL);
