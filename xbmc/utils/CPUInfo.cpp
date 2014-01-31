@@ -18,7 +18,12 @@
  *
  */
 
+
 #include <cstdlib>
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "CPUInfo.h"
 #include "utils/Temperature.h"
@@ -51,6 +56,10 @@
 #endif
 
 #if defined(TARGET_ANDROID)
+#ifdef HAS_LIBAMCODEC
+#include "utils/AMLUtils.h"
+#include "utils/SysfsUtils.h"
+#endif
 #include "android/activity/AndroidFeatures.h"
 #endif
 
@@ -578,6 +587,16 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
 #if defined(TARGET_DARWIN_OSX)
   value = SMCGetTemperature(SMC_KEY_CPU_TEMP);
   scale = 'c';
+#elif defined(TARGET_ANDROID)
+#ifdef HAS_LIBAMCODEC
+  if (aml_get_device_type() == AML_DEVICE_TYPE_M6) // Meson6 only
+  {
+    if (-1 == (value = SysfsUtils::GetInt("/sys/class/saradc/temperature")))
+      value = 0;
+    else
+      scale = 'c';
+  }
+#endif
 #else
   int         ret   = 0;
   FILE        *p    = NULL;
