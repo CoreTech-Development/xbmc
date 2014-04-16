@@ -66,6 +66,7 @@ void CEGLNativeTypeAmlogic::Initialize()
   aml_permissions();
   aml_cpufreq_min(true);
   aml_cpufreq_max(true);
+  DisableFreeScale();
   return;
 }
 void CEGLNativeTypeAmlogic::Destroy()
@@ -88,9 +89,12 @@ bool CEGLNativeTypeAmlogic::CreateNativeWindow()
   if (!nativeWindow)
     return false;
 
-  nativeWindow->width = 1280;
-  nativeWindow->height = 720;
+  nativeWindow->width = 1920;
+  nativeWindow->height = 1080;
   m_nativeWindow = nativeWindow;
+
+  SetFramebufferResolution(nativeWindow->width, nativeWindow->height);
+
   return true;
 #else
   return false;
@@ -135,6 +139,14 @@ bool CEGLNativeTypeAmlogic::GetNativeResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
 {
+#if defined(_FBDEV_WINDOW_H_)
+  if (m_nativeWindow)
+  {
+    ((fbdev_window *)m_nativeWindow)->width = res.iScreenWidth;
+    ((fbdev_window *)m_nativeWindow)->height = res.iScreenHeight;
+  }
+#endif
+
   switch((int)(0.5 + res.fRefreshRate))
   {
     default:
@@ -240,7 +252,14 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
   std::string mode = resolution;
   // switch display resolution
   SysfsUtils::SetString("/sys/class/display/mode", mode.c_str());
+
+#ifdef TARGET_ANDROID
   SetupVideoScaling(mode.c_str());
+#else
+  RESOLUTION_INFO res;
+  aml_mode_to_resolution(mode.c_str(), &res);
+  SetFramebufferResolution(res);
+#endif
 
   return true;
 }
@@ -321,6 +340,32 @@ void CEGLNativeTypeAmlogic::DisableFreeScale()
       char daxis_str[256] = {0};
       sprintf(daxis_str, "%d %d %d %d 0 0 0 0", 0, 0, vinfo.xres-1, vinfo.yres-1);
       SysfsUtils::SetString("/sys/class/display/axis", daxis_str);
+    }
+    close(fd0);
+  }
+}
+
+void CEGLNativeTypeAmlogic::SetFramebufferResolution(const RESOLUTION_INFO &res) const
+{
+  SetFramebufferResolution(res.iScreenWidth, res.iScreenHeight);
+}
+
+void CEGLNativeTypeAmlogic::SetFramebufferResolution(int width, int height) const
+{
+  int fd0;
+  std::string framebuffer = "/dev/" + m_framebuffer_name;
+
+  if ((fd0 = open(framebuffer.c_str(), O_RDWR)) >= 0)
+  {
+    struct fb_var_screeninfo vinfo;
+    if (ioctl(fd0, FBIOGET_VSCREENINFO, &vinfo) == 0)
+    {
+      vinfo.xres = width;
+      vinfo.yres = height;
+      vinfo.xres_virtual = 1920;
+      vinfo.yres_virtual = 2160;
+      vinfo.bits_per_pixel = 32;
+      ioctl(fd0, FBIOPUT_VSCREENINFO, &vinfo);
     }
     close(fd0);
   }
