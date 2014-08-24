@@ -122,9 +122,11 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       // amcodec can't handle h263
       return false;
       break;
+#if defined(TARGET_ANDROID)
     case AV_CODEC_ID_FLV1:
       m_pFormatName = "am-flv1";
       break;
+#endif
     case AV_CODEC_ID_RV10:
     case AV_CODEC_ID_RV20:
     case AV_CODEC_ID_RV30:
