@@ -289,6 +289,14 @@ private:
   RENDER_STEREO_MODE m_nextStereoMode;
 
   CRect m_scissors;
+
+#if defined(HAS_LIBAMCODEC) && defined(TARGET_LINUX)
+  // AMlogic resolution, x and y set and change check
+  int amlWidth;
+  int amlHeight;
+  int amlX;
+  int amlY;
+#endif
 };
 
 /*!

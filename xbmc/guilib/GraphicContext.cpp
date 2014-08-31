@@ -33,6 +33,11 @@
 #include "GUIWindowManager.h"
 #include "video/VideoReferenceClock.h"
 
+#if defined(HAS_LIBAMCODEC) && defined(TARGET_LINUX)
+#include "utils/AMLUtils.h"
+#include "utils/SysfsUtils.h"
+#endif
+
 using namespace KODI::MESSAGING;
 
 extern bool g_fullScreen;
@@ -61,6 +66,13 @@ CGraphicContext::CGraphicContext(void) :
   , m_stereoMode(RENDER_STEREO_MODE_OFF)
   , m_nextStereoMode(RENDER_STEREO_MODE_OFF)
 {
+#if defined(HAS_LIBAMCODEC) && defined(TARGET_LINUX)
+  // AMlogic resolution, x and y set and change check
+  amlWidth = 0;
+  amlHeight = 0;
+  amlX = 0;
+  amlY = 0;
+#endif
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -779,6 +791,22 @@ void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, f
     float fToPosY     = (float)info.Overscan.top;
     float fToWidth    = (float)info.Overscan.right  - fToPosX;
     float fToHeight   = (float)info.Overscan.bottom - fToPosY;
+
+#if defined(HAS_LIBAMCODEC) && defined(TARGET_LINUX)
+    if ((amlWidth != info.Overscan.right  - fToPosX) || (amlHeight != info.Overscan.bottom - fToPosY) || (amlX != info.Overscan.left) || (amlY != info.Overscan.top))
+    {
+      amlWidth = info.Overscan.right  - fToPosX;
+      amlHeight = info.Overscan.bottom - fToPosY;
+      amlX = info.Overscan.left;
+      amlY = info.Overscan.top;
+
+      system("mkdir -p /root/.kodi/temp");
+      SysfsUtils::SetInt("/root/.kodi/temp/window_width", amlWidth);
+      SysfsUtils::SetInt("/root/.kodi/temp/window_height", amlHeight);
+      SysfsUtils::SetInt("/root/.kodi/temp/window_x", amlX);
+      SysfsUtils::SetInt("/root/.kodi/temp/window_y", amlY);
+    }
+#endif
 
     if(!g_guiSkinzoom) // lookup gui setting if we didn't have it already
       g_guiSkinzoom = (CSettingInt*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINZOOM);
