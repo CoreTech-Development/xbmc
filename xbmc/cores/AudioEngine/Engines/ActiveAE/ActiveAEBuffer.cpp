@@ -25,6 +25,9 @@
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
+#if defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
+#endif
 
 using namespace ActiveAE;
 
@@ -163,6 +166,10 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
   }
   m_resampler = NULL;
   m_fillPackets = false;
+#ifdef HAS_LIBAMCODEC
+  if (aml_present())
+    m_fillPackets = true;
+#endif
   m_drain = false;
   m_empty = true;
   m_procSample = NULL;
