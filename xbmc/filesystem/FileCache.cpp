@@ -37,6 +37,9 @@
 #include <algorithm>
 #include <memory>
 
+#include <limits.h>
+#include <XMemUtils.h>
+
 using namespace XFILE;
 
 #define READ_CACHE_CHUNK_SIZE (64*1024)
@@ -185,7 +188,7 @@ bool CFileCache::Open(const CURL& url)
 
   if (!m_pCache)
   {
-    if (g_advancedSettings.m_cacheMemBufferSize == 0)
+    if (g_advancedSettings.m_freeMemCachePercent == 0)
     {
       // Use cache on disk
       m_pCache = new CSimpleFileCache();
@@ -193,26 +196,37 @@ bool CFileCache::Open(const CURL& url)
     else
     {
       size_t cacheSize;
-      if (m_fileSize > 0 && m_fileSize < g_advancedSettings.m_cacheMemBufferSize && !(m_flags & READ_AUDIO_VIDEO))
+
+      // Set cache size of m_freeMemCachePercent of free ram, with hardcoded 1GB upper limit
+      MEMORYSTATUSEX stat;
+      stat.dwLength = sizeof(MEMORYSTATUSEX);
+      GlobalMemoryStatusEx(&stat);
+
+      // Limit maxCache to 1GB
+      unsigned int maxCache = (1024 * 1024 * 1000);
+      double ramSize = (stat.ullAvailPhys * (g_advancedSettings.m_freeMemCachePercent / 100.00));
+      unsigned int cacheRam = std::min(static_cast<unsigned int>(ramSize), maxCache);
+
+      if (m_fileSize > 0 && m_fileSize < cacheRam && !(m_flags & READ_AUDIO_VIDEO))
       {
         // NOTE: We don't need to take into account READ_MULTI_STREAM here as it's only used for audio/video
         cacheSize = m_fileSize;
       }
       else
       {
-        cacheSize = g_advancedSettings.m_cacheMemBufferSize;
+        cacheSize = cacheRam;
       }
 
-      size_t back = cacheSize / 4;
-      size_t front = cacheSize - back;
+      unsigned int backCache = static_cast<unsigned int>(cacheSize * 0.75);
+      unsigned int frontCache = cacheSize - backCache;
       
       if (m_flags & READ_MULTI_STREAM)
       {
         // READ_MULTI_STREAM requires double buffering, so use half the amount of memory for each buffer
-        front /= 2;
-        back /= 2;
+        frontCache /= 2;
+        backCache /= 2;
       }
-      m_pCache = new CCircularCache(front, back);
+      m_pCache = new CCircularCache(std::max<unsigned int>(frontCache, 1024 * 1024), backCache);
     }
 
     if (m_flags & READ_MULTI_STREAM)
