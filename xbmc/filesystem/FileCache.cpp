@@ -18,6 +18,7 @@
  *
  */
 
+#include <limits.h>
 #include "threads/SystemClock.h"
 #include "utils/AutoPtrHandle.h"
 #include "FileCache.h"
@@ -111,18 +112,30 @@ CFileCache::CFileCache(bool useDoubleCache)
    m_seekPos = 0;
    m_readPos = 0;
    m_writePos = 0;
-   if (g_advancedSettings.m_cacheMemBufferSize == 0)
+   if (g_advancedSettings.m_freeMemCachePercent == 0)
      m_pCache = new CSimpleFileCache();
    else
    {
-     size_t front = g_advancedSettings.m_cacheMemBufferSize;
-     size_t back = std::max<size_t>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024);
+     //set cache size of m_freeMemCachePercent of free ram,  with hardcoded 1 GB upper limit
+     MEMORYSTATUSEX stat;
+     stat.dwLength = sizeof(MEMORYSTATUSEX);
+     GlobalMemoryStatusEx(&stat);
+
+     //limit max cache to 1 GB
+     unsigned int maxcache = (1024 * 1024 * 1000);
+     double ramamount = (stat.ullAvailPhys * (g_advancedSettings.m_freeMemCachePercent / 100.00));
+
+     unsigned int cacheRam = std::min(static_cast<unsigned int>(ramamount), maxcache);
+
+     unsigned int frontCache = static_cast<unsigned int>(cacheRam * 0.75);
+     unsigned int backCache = cacheRam - frontCache;
+
      if (useDoubleCache)
      {
-       front = front / 2;
-       back = back / 2;
+       frontCache = frontCache / 2;
+       backCache = backCache / 2;
      }
-     m_pCache = new CCircularCache(front, back);
+     m_pCache = new CCircularCache(frontCache, std::max<unsigned int>(backCache, 1024 * 1024));
    }
    if (useDoubleCache)
    {

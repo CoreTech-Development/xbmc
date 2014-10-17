@@ -584,6 +584,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_caching = CACHESTATE_DONE;
   m_HasVideo = false;
   m_HasAudio = false;
+  m_readrate = 0;
 
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
 
@@ -820,7 +821,11 @@ bool CDVDPlayer::OpenDemuxStream()
   int64_t len = m_pInputStream->GetLength();
   int64_t tim = m_pDemuxer->GetStreamLength();
   if(len > 0 && tim > 0)
-    m_pInputStream->SetReadRate((unsigned int) (len * 1000 / tim));
+  {
+    //cap to intital read rate to 40 megabits/second if less than average bitrate * 1.25
+    m_readrate = std::min((unsigned int) ((len * 1000 / tim) * 1.25), (unsigned int) (40000000 / 8));
+    m_pInputStream->SetReadRate(m_readrate);
+  }
 
   return true;
 }
@@ -1288,6 +1293,9 @@ void CDVDPlayer::Process()
 
     // update application with our state
     UpdateApplication(1000);
+
+    //update readrate based on peak bitrate
+    UpdateReadRate();
 
     // make sure we run subtitle process here
     m_dvdPlayerSubtitle->Process(m_clock.GetClock() + m_State.time_offset - m_dvdPlayerVideo->GetSubtitleDelay(), m_State.time_offset);
@@ -4561,6 +4569,20 @@ void CDVDPlayer::UpdateApplication(double timeout)
     }
   }
   m_UpdateApplication = CDVDClock::GetAbsoluteClock();
+}
+
+void CDVDPlayer::UpdateReadRate()
+{
+  unsigned int bytespersecond = (m_dvdPlayerVideo->GetVideoBitrate() + m_dvdPlayerAudio->GetAudioBitrate()) / 8;
+
+  if (bytespersecond > m_readrate)
+  {
+    //if current bitrate * 1.25 is over 40 Mbs then cap at at max of actual bitrate or 40 Mb/s whichever is greater
+    //otherwise set read rate to current bitrate * 1.25
+    m_readrate = std::min((unsigned int)(bytespersecond * 1.25), std::max((unsigned int) bytespersecond, (unsigned int) (40000000 / 8)));
+
+    m_pInputStream->SetReadRate(m_readrate);
+  }
 }
 
 bool CDVDPlayer::CanRecord()
