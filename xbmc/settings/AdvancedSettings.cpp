@@ -350,7 +350,7 @@ void CAdvancedSettings::Initialize()
   m_bPVRAutoScanIconsUserSet       = false;
   m_iPVRNumericChannelSwitchTimeout = 1000;
 
-  m_cacheMemBufferSize = 1024 * 1024 * 20;
+  m_freeMemCachePercent = 50;
   m_networkBufferMode = 0; // Default (buffer all internet streams/filesystems)
   // the following setting determines the readRate of a player data
   // as multiply of the default data read rate
@@ -788,7 +788,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
     XMLUtils::GetBoolean(pElement,"disableipv6", m_curlDisableIPV6);
-    XMLUtils::GetUInt(pElement, "cachemembuffersize", m_cacheMemBufferSize);
+    XMLUtils::GetInt(pElement, "freememorycachepercent", m_freeMemCachePercent, 0, 80);
     XMLUtils::GetUInt(pElement, "buffermode", m_networkBufferMode, 0, 3);
     XMLUtils::GetFloat(pElement, "readbufferfactor", m_readBufferFactor);
   }
