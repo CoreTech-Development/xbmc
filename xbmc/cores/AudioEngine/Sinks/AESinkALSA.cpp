@@ -765,7 +765,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
    will cause problems with menu sounds. Buffer will be increased
    after those are fixed.
   */
-  periodSize  = std::min(periodSize, (snd_pcm_uframes_t) sampleRate / 20);
+  periodSize  = std::min(periodSize, (snd_pcm_uframes_t) sampleRate / 50);
   bufferSize  = std::min(bufferSize, (snd_pcm_uframes_t) sampleRate / 5);
 #if defined(HAS_LIBAMCODEC)
   bufferSize  = CheckNP2(bufferSize);
@@ -780,7 +780,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   periodSize  = CheckNP2(periodSize);
 #endif
 
-  bufferSize  = std::min(bufferSize, (snd_pcm_uframes_t)8192);
+  bufferSize  = std::max(bufferSize, (snd_pcm_uframes_t)8192);
   periodSize  = bufferSize / ALSA_PERIODS;
   periods     = ALSA_PERIODS;
 
