@@ -72,6 +72,7 @@
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
+#include "utils/md5.h"
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -205,6 +206,17 @@ bool CSettings::Save(const std::string &file)
 
   if (!m_settingsManager->Save(root))
     return false;
+
+  // Avoid saving if the settings saved earlier are indetical to the current ones
+  if (CFile::Exists(file))
+  {
+    std::string fileMD5 = CUtil::GetFileMD5(file);
+    TiXmlPrinter xmlPrinter;
+    xmlDoc.Accept(&xmlPrinter);
+    std::string settingsMD5 = XBMC::XBMC_MD5::GetMD5(xmlPrinter.CStr());
+    if (fileMD5 == settingsMD5)
+      return true;
+  }
 
   return xmlDoc.SaveFile(file);
 }
