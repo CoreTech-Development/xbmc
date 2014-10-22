@@ -355,6 +355,12 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float GetDisplayLatency(float refreshrate);
     bool m_initialized;
 
+    bool m_hideTotaluptime;
+    bool m_hideBattery;
+    bool m_hideCPUrev;
+    bool m_hideCPUserial;
+    bool m_hideCPUtemp;
+
     //! \brief Returns a list of music extension for filtering in the GUI
     std::string GetMusicExtensions() const;
 
