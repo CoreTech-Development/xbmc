@@ -406,6 +406,12 @@ void CAdvancedSettings::Initialize()
   m_userAgent = g_sysinfo.GetUserAgent();
 
   m_initialized = true;
+
+  m_hideTotaluptime = false;
+  m_hideBattery = false;
+  m_hideCPUrev = false;
+  m_hideCPUserial = false;
+  m_hideCPUtemp = false;
 }
 
 bool CAdvancedSettings::Load()
@@ -869,6 +875,12 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
   XMLUtils::GetUInt(pRootElement, "packagefoldersize", m_addonPackageFolderSize);
   XMLUtils::GetBoolean(pRootElement, "allowdeferredrendering", m_bAllowDeferredRendering);
+
+  XMLUtils::GetBoolean(pRootElement, "hidetotaluptime", m_hideTotaluptime);
+  XMLUtils::GetBoolean(pRootElement, "hidebattery", m_hideBattery);
+  XMLUtils::GetBoolean(pRootElement, "hidecpurev", m_hideCPUrev);
+  XMLUtils::GetBoolean(pRootElement, "hidecpuserial", m_hideCPUserial);
+  XMLUtils::GetBoolean(pRootElement, "hidecputemp", m_hideCPUtemp);
 
   // EPG
   pElement = pRootElement->FirstChildElement("epg");
