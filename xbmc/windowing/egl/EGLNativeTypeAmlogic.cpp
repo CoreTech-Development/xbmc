@@ -230,11 +230,11 @@ bool CEGLNativeTypeAmlogic::GetPreferredResolution(RESOLUTION_INFO *res) const
   // check display/mode, it gets defaulted at boot
   if (!GetNativeResolution(res))
   {
-    // punt to 720p or 576cvbs if we get nothing
+    // punt to 720p or 480cvbs if we get nothing
     if (IsHdmiConnected())
       aml_mode_to_resolution("720p", res);
     else
-      aml_mode_to_resolution("576cvbs", res);
+      aml_mode_to_resolution("480cvbs", res);
   }
 
   return true;
