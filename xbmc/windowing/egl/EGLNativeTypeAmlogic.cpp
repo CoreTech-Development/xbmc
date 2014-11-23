@@ -66,7 +66,6 @@ void CEGLNativeTypeAmlogic::Initialize()
   aml_permissions();
   aml_cpufreq_min(true);
   aml_cpufreq_max(true);
-  DisableFreeScale();
   return;
 }
 void CEGLNativeTypeAmlogic::Destroy()
@@ -256,9 +255,15 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
 #ifdef TARGET_ANDROID
   SetupVideoScaling(mode.c_str());
 #else
+  DisableFreeScale();
   RESOLUTION_INFO res;
   aml_mode_to_resolution(mode.c_str(), &res);
   SetFramebufferResolution(res);
+
+  if (StringUtils::StartsWith(mode, "4k2k"))
+  {
+    EnableFreeScale();
+  }
 #endif
 
   return true;
@@ -317,7 +322,15 @@ void CEGLNativeTypeAmlogic::DisableFreeScale()
 
 void CEGLNativeTypeAmlogic::SetFramebufferResolution(const RESOLUTION_INFO &res) const
 {
-  SetFramebufferResolution(res.iScreenWidth, res.iScreenHeight);
+  std::string mode;
+  SysfsUtils::GetString("/sys/class/display/mode", mode);
+
+  if (StringUtils::StartsWith(mode, "4k2k"))
+  {
+    SetFramebufferResolution(res.iWidth, res.iHeight);
+  } else {
+    SetFramebufferResolution(res.iScreenWidth, res.iScreenHeight);
+  }
 }
 
 void CEGLNativeTypeAmlogic::SetFramebufferResolution(int width, int height) const
