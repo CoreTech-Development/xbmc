@@ -256,11 +256,32 @@ void CEGLNativeTypeAmlogic::SetupVideoScaling(const char *mode)
   SysfsUtils::SetInt("/sys/class/graphics/fb0/blank", 0);
 }
 
+void CEGLNativeTypeAmlogic::EnableFreeScale()
+{
+  RESOLUTION_INFO res;
+  std::string mode;
+  SysfsUtils::GetString("/sys/class/display/mode", mode);
+  aml_mode_to_resolution(mode.c_str(), &res);
+
+  char fsaxis_str[256] = {0};
+  sprintf(fsaxis_str, "0 0 %d %d", res.iWidth-1, res.iHeight-1);
+  char waxis_str[256] = {0};
+  sprintf(waxis_str, "0 0 %d %d", res.iScreenWidth-1, res.iScreenHeight-1);
+
+  SysfsUtils::SetInt("/sys/class/video/disable_video", 1);
+  SysfsUtils::SetString("/sys/class/graphics/fb0/free_scale_axis", fsaxis_str);
+  SysfsUtils::SetString("/sys/class/graphics/fb0/window_axis", waxis_str);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 0x10001);
+  SysfsUtils::SetInt("/sys/class/video/disable_video", 2);
+}
+
 void CEGLNativeTypeAmlogic::DisableFreeScale()
 {
-  // turn off frame buffer freescale
+  SysfsUtils::SetInt("/sys/class/video/disable_video", 1);
+  SysfsUtils::SetString("/sys/class/graphics/fb0/free_scale_axis", "0 0 0 0");
+  SysfsUtils::SetString("/sys/class/graphics/fb0/window_axis", "0 0 0 0");
   SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 0);
-  SysfsUtils::SetInt("/sys/class/graphics/fb1/free_scale", 0);
+  SysfsUtils::SetInt("/sys/class/video/disable_video", 0);
 }
 
 void CEGLNativeTypeAmlogic::SetFramebufferResolution(const RESOLUTION_INFO &res) const
