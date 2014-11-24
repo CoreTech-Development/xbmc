@@ -88,11 +88,18 @@ bool CEGLNativeTypeAmlogic::CreateNativeWindow()
   if (!nativeWindow)
     return false;
 
-  nativeWindow->width = 1920;
-  nativeWindow->height = 1080;
+  if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+    nativeWindow->width = 1280;
+    nativeWindow->height = 720;
+  } else {
+    nativeWindow->width = 1920;
+    nativeWindow->height = 1080;
+  }
   m_nativeWindow = nativeWindow;
 
-  SetFramebufferResolution(nativeWindow->width, nativeWindow->height);
+  if (aml_get_device_type() > AML_DEVICE_TYPE_M3) {
+    SetFramebufferResolution(nativeWindow->width, nativeWindow->height);
+  }
 
   return true;
 #else
@@ -139,7 +146,7 @@ bool CEGLNativeTypeAmlogic::GetNativeResolution(RESOLUTION_INFO *res) const
 bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
 {
 #if defined(_FBDEV_WINDOW_H_)
-  if (m_nativeWindow)
+  if ((m_nativeWindow) && (aml_get_device_type() > AML_DEVICE_TYPE_M3))
   {
     ((fbdev_window *)m_nativeWindow)->width = res.iScreenWidth;
     ((fbdev_window *)m_nativeWindow)->height = res.iScreenHeight;
@@ -256,11 +263,15 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
   SetupVideoScaling(mode.c_str());
 #else
   DisableFreeScale();
-  RESOLUTION_INFO res;
-  aml_mode_to_resolution(mode.c_str(), &res);
-  SetFramebufferResolution(res);
 
-  if (StringUtils::StartsWith(mode, "4k2k"))
+  if (aml_get_device_type() > AML_DEVICE_TYPE_M3)
+  {
+    RESOLUTION_INFO res;
+    aml_mode_to_resolution(mode.c_str(), &res);
+    SetFramebufferResolution(res);
+  }
+
+  if ((StringUtils::StartsWith(mode, "4k2k")) || ((StringUtils::StartsWith(mode, "1080")) && (aml_get_device_type() <= AML_DEVICE_TYPE_M3)))
   {
     EnableFreeScale();
   }
