@@ -195,10 +195,34 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
       }
       break;
     case 30:
-      SetDisplayResolution("1080p30hz");
+      switch(res.iScreenWidth)
+      {
+        default:
+        case 1920:
+          SetDisplayResolution("1080p30hz");
+          break;
+        case 3840:
+          SetDisplayResolution("4k2k30hz");
+          break;
+      }
+      break;
+    case 25:
+      SetDisplayResolution("4k2k25hz");
       break;
     case 24:
-      SetDisplayResolution("1080p24hz");
+      switch(res.iScreenWidth)
+      {
+        default:
+        case 1920:
+          SetDisplayResolution("1080p24hz");
+        break;
+        case 4096:
+          SetDisplayResolution("4k2ksmpte");
+          break;
+        case 3840:
+          SetDisplayResolution("4k2k24hz");
+          break;
+      }
       break;
   }
 
