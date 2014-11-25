@@ -4510,6 +4510,14 @@ void CApplication::Process()
   {
     m_autoExecScriptExecuted = false;
 
+    // sysexec.py - xbmc
+    std::string strSysExecPy = CSpecialProtocol::TranslatePath("special://xbmc/sysexec.py");
+
+    if (XFILE::CFile::Exists(strSysExecPy))
+      CScriptInvocationManager::Get().ExecuteAsync(strSysExecPy);
+    else
+      CLog::Log(LOGDEBUG, "no xbmc sysexec.py (%s) found, skipping", strSysExecPy.c_str());
+
     // autoexec.py - profile
     std::string strAutoExecPy = CSpecialProtocol::TranslatePath("special://profile/autoexec.py");
 
