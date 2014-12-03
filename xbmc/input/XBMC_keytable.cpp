@@ -204,6 +204,15 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { XBMCK_F13,                    0,    0, XBMCVK_F13,           "f13"}
 , { XBMCK_F14,                    0,    0, XBMCVK_F14,           "f14"}
 , { XBMCK_F15,                    0,    0, XBMCVK_F15,           "f15"}
+, { XBMCK_F16,                    0,    0, XBMCVK_F16,           "f16"}
+, { XBMCK_F17,                    0,    0, XBMCVK_F17,           "f17"}
+, { XBMCK_F18,                    0,    0, XBMCVK_F18,           "f18"}
+, { XBMCK_F19,                    0,    0, XBMCVK_F19,           "f19"}
+, { XBMCK_F20,                    0,    0, XBMCVK_F20,           "f20"}
+, { XBMCK_F21,                    0,    0, XBMCVK_F21,           "f21"}
+, { XBMCK_F22,                    0,    0, XBMCVK_F22,           "f22"}
+, { XBMCK_F23,                    0,    0, XBMCVK_F23,           "f23"}
+, { XBMCK_F24,                    0,    0, XBMCVK_F24,           "f24"}
 
 // Misc non-printing keys
 , { XBMCK_UP,                     0,    0, XBMCVK_UP,            "up" }
