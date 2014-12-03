@@ -242,6 +242,17 @@ typedef enum {
   XBMCK_SHUFFLE           = 342,
   XBMCK_FASTFORWARD       = 343,
 
+  // Additional Function keys
+  XBMCK_F16               = 350,
+  XBMCK_F17               = 351,
+  XBMCK_F18               = 352,
+  XBMCK_F19               = 353,
+  XBMCK_F20               = 354,
+  XBMCK_F21               = 355,
+  XBMCK_F22               = 356,
+  XBMCK_F23               = 357,
+  XBMCK_F24               = 358,
+
   XBMCK_LAST
 } XBMCKey;
 
