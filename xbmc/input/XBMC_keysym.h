@@ -189,41 +189,50 @@ typedef enum {
   XBMCK_F13         = 0x126,
   XBMCK_F14         = 0x127,
   XBMCK_F15         = 0x128,
+  XBMCK_F16         = 0x129,
+  XBMCK_F17         = 0x12A,
+  XBMCK_F18         = 0x12B,
+  XBMCK_F19         = 0x12C,
+  XBMCK_F20         = 0x12D,
+  XBMCK_F21         = 0x12E,
+  XBMCK_F22         = 0x12F,
+  XBMCK_F23         = 0x130,
+  XBMCK_F24         = 0x131,
 
   // Key state modifier keys
-  XBMCK_NUMLOCK     = 0x12C,
-  XBMCK_CAPSLOCK    = 0x12D,
-  XBMCK_SCROLLOCK   = 0x12E,
-  XBMCK_RSHIFT      = 0x12F,
-  XBMCK_LSHIFT      = 0x130,
-  XBMCK_RCTRL       = 0x131,
-  XBMCK_LCTRL       = 0x132,
-  XBMCK_RALT        = 0x133,
-  XBMCK_LALT        = 0x134,
-  XBMCK_RMETA       = 0x135,
-  XBMCK_LMETA       = 0x136,
-  XBMCK_LSUPER      = 0x137,    // Left "Windows" key
-  XBMCK_RSUPER      = 0x138,    // Right "Windows" key
-  XBMCK_MODE        = 0x139,    // "Alt Gr" key
-  XBMCK_COMPOSE     = 0x13A,    // Multi-key compose key
+  XBMCK_NUMLOCK     = 0x132,
+  XBMCK_CAPSLOCK    = 0x133,
+  XBMCK_SCROLLOCK   = 0x134,
+  XBMCK_RSHIFT      = 0x135,
+  XBMCK_LSHIFT      = 0x136,
+  XBMCK_RCTRL       = 0x137,
+  XBMCK_LCTRL       = 0x138,
+  XBMCK_RALT        = 0x139,
+  XBMCK_LALT        = 0x13A,
+  XBMCK_RMETA       = 0x13B,
+  XBMCK_LMETA       = 0x13C,
+  XBMCK_LSUPER      = 0x13D,    // Left "Windows" key
+  XBMCK_RSUPER      = 0x13E,    // Right "Windows" key
+  XBMCK_MODE        = 0x13F,    // "Alt Gr" key
+  XBMCK_COMPOSE     = 0x140,    // Multi-key compose key
 
   // Miscellaneous function keys
-  XBMCK_HELP        = 0x13B,
-  XBMCK_PRINT       = 0x13C,
-  XBMCK_SYSREQ      = 0x13D,
-  XBMCK_BREAK       = 0x13E,
-  XBMCK_MENU        = 0x13F,
-  XBMCK_POWER       = 0x140,    // Power Macintosh power key
-  XBMCK_EURO        = 0x141,    // Some european keyboards
-  XBMCK_UNDO        = 0x142,    // Atari keyboard has Undo
-  XBMCK_SLEEP       = 0x143,    // Sleep button on Nyxboard remote (and others?)
-  XBMCK_GUIDE       = 0x144,
-  XBMCK_SETTINGS    = 0x145,
-  XBMCK_INFO        = 0x146,
-  XBMCK_RED         = 0x147,
-  XBMCK_GREEN       = 0x148,
-  XBMCK_YELLOW      = 0x149,
-  XBMCK_BLUE        = 0x14a,
+  XBMCK_HELP        = 0x141,
+  XBMCK_PRINT       = 0x142,
+  XBMCK_SYSREQ      = 0x143,
+  XBMCK_BREAK       = 0x144,
+  XBMCK_MENU        = 0x145,
+  XBMCK_POWER       = 0x146,    // Power Macintosh power key
+  XBMCK_EURO        = 0x147,    // Some european keyboards
+  XBMCK_UNDO        = 0x148,    // Atari keyboard has Undo
+  XBMCK_SLEEP       = 0x149,    // Sleep button on Nyxboard remote (and others?)
+  XBMCK_GUIDE       = 0x14A,
+  XBMCK_SETTINGS    = 0x14B,
+  XBMCK_INFO        = 0x14C,
+  XBMCK_RED         = 0x14D,
+  XBMCK_GREEN       = 0x14E,
+  XBMCK_YELLOW      = 0x14F,
+  XBMCK_BLUE        = 0x150,
 
   // Add any other keys here
 
