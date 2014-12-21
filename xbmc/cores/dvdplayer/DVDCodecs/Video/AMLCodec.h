@@ -66,6 +66,7 @@ private:
   static void   RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
 
   DllLibAmCodec   *m_dll;
+  bool             m_dll_has_video_delay;
   bool             m_opened;
   am_private_t    *am_private;
   CDVDStreamInfo   m_hints;
