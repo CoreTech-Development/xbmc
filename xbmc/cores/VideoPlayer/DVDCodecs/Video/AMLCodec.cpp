@@ -1780,7 +1780,7 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
   if (!m_opened)
     return VC_BUFFER;
 
-  if (pData)
+  if (pData && iSize)
   {
     am_private->am_pkt.data = pData;
     am_private->am_pkt.data_size = iSize;
