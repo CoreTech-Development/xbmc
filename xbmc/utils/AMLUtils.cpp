@@ -384,7 +384,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 50;
     res->dwFlags = D3DPRESENTFLAG_INTERLACED;
   }
-  else if (fromMode.Equals("720p"))
+  else if (fromMode.Equals("720p") || fromMode.Equals("720p59hz") || fromMode.Equals("720p60hz"))
   {
     res->iWidth = 1280;
     res->iHeight= 720;
@@ -402,7 +402,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 50;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (fromMode.Equals("1080p"))
+  else if (fromMode.Equals("1080p") || fromMode.Equals("1080p59hz") || fromMode.Equals("1080p60hz"))
   {
 #if defined(TARGET_ANDROID)
     if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
@@ -420,7 +420,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 60;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (fromMode.Equals("1080p24hz"))
+  else if (fromMode.Equals("1080p23hz") || fromMode.Equals("1080p24hz"))
   {
 #if defined(TARGET_ANDROID)
     if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
@@ -474,7 +474,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 50;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (fromMode.Equals("1080i"))
+  else if (fromMode.Equals("1080i") || fromMode.Equals("1080i59hz") || fromMode.Equals("1080i60hz"))
   {
 #if defined(TARGET_ANDROID)
     if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
@@ -524,7 +524,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 24;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (fromMode.Equals("4k2k24hz"))
+  else if (fromMode.Equals("4k2k23hz") || fromMode.Equals("4k2k24hz"))
   {
     if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
       res->iWidth = 1280;
@@ -552,7 +552,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 25;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (fromMode.Equals("4k2k30hz"))
+  else if (fromMode.Equals("4k2k29hz") || fromMode.Equals("4k2k30hz"))
   {
     if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
       res->iWidth = 1280;
