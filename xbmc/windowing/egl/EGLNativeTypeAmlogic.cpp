@@ -393,9 +393,10 @@ void CEGLNativeTypeAmlogic::SetFramebufferResolution(int width, int height) cons
 bool CEGLNativeTypeAmlogic::IsHdmiConnected() const
 {
   int hpd_state;
-  if(SysfsUtils::GetInt("/sys/class/amhdmitx/amhdmitx0/hpd_state", hpd_state) != 2);
+  SysfsUtils::GetInt("/sys/class/amhdmitx/amhdmitx0/hpd_state", hpd_state);
+  if (hpd_state == 2);
   {
-    return false;
+    return 1;
   }
-  return true;
+  return 0;
 }
