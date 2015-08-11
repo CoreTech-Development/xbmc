@@ -329,7 +329,16 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 60;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "480cvbs"))
+  else if (StringUtils::EqualsNoCase(fromMode, "480p"))
+  {
+    res->iWidth = 720;
+    res->iHeight= 480;
+    res->iScreenWidth = 720;
+    res->iScreenHeight= 480;
+    res->fRefreshRate = 60;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+  }
+  else if (StringUtils::EqualsNoCase(fromMode, "480i"))
   {
     res->iWidth = 720;
     res->iHeight= 480;
@@ -338,7 +347,16 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 60;
     res->dwFlags = D3DPRESENTFLAG_INTERLACED;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "576cvbs"))
+  else if (StringUtils::EqualsNoCase(fromMode, "576p"))
+  {
+    res->iWidth = 720;
+    res->iHeight= 576;
+    res->iScreenWidth = 720;
+    res->iScreenHeight= 576;
+    res->fRefreshRate = 50;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+  }
+  else if (StringUtils::EqualsNoCase(fromMode, "576i"))
   {
     res->iWidth = 720;
     res->iHeight= 576;
@@ -346,15 +364,6 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->iScreenHeight= 576;
     res->fRefreshRate = 50;
     res->dwFlags = D3DPRESENTFLAG_INTERLACED;
-  }
-  else if (StringUtils::EqualsNoCase(fromMode, "720p"))
-  {
-    res->iWidth = 1280;
-    res->iHeight= 720;
-    res->iScreenWidth = 1280;
-    res->iScreenHeight= 720;
-    res->fRefreshRate = 60;
-    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
   else if (StringUtils::EqualsNoCase(fromMode, "720p50hz"))
   {
@@ -365,7 +374,25 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 50;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "1080p"))
+  else if (StringUtils::EqualsNoCase(fromMode, "720p59hz"))
+  {
+    res->iWidth = 1280;
+    res->iHeight= 720;
+    res->iScreenWidth = 1280;
+    res->iScreenHeight= 720;
+    res->fRefreshRate = 59.940;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+  }
+  else if (StringUtils::EqualsNoCase(fromMode, "720p60hz") || StringUtils::EqualsNoCase(fromMode, "720p"))
+  {
+    res->iWidth = 1280;
+    res->iHeight= 720;
+    res->iScreenWidth = 1280;
+    res->iScreenHeight= 720;
+    res->fRefreshRate = 60;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+  }
+  else if (StringUtils::EqualsNoCase(fromMode, "1080p23hz"))
   {
 #if defined(TARGET_ANDROID)
     if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
@@ -378,15 +405,6 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
       res->iWidth = 1920;
       res->iHeight= 1080;
     }
-    res->iScreenWidth = 1920;
-    res->iScreenHeight= 1080;
-    res->fRefreshRate = 60;
-    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-  }
-  else if (StringUtils::EqualsNoCase(fromMode, "1080p23hz"))
-  {
-    res->iWidth = 1920;
-    res->iHeight= 1080;
     res->iScreenWidth = 1920;
     res->iScreenHeight= 1080;
     res->fRefreshRate = 23.976;
@@ -448,14 +466,23 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "1080p59hz"))
   {
-    res->iWidth = 1920;
-    res->iHeight= 1080;
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#endif
+      res->iWidth = 1280;
+      res->iHeight= 720;
+    } else {
+      res->iWidth = 1920;
+      res->iHeight= 1080;
+    }
     res->iScreenWidth = 1920;
     res->iScreenHeight= 1080;
     res->fRefreshRate = 59.940;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "1080i"))
+  else if (StringUtils::EqualsNoCase(fromMode, "1080p60hz") || StringUtils::EqualsNoCase(fromMode, "1080p"))
   {
 #if defined(TARGET_ANDROID)
     if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
@@ -471,7 +498,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->iScreenWidth = 1920;
     res->iScreenHeight= 1080;
     res->fRefreshRate = 60;
-    res->dwFlags = D3DPRESENTFLAG_INTERLACED;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
   else if (StringUtils::EqualsNoCase(fromMode, "1080i50hz"))
   {
@@ -493,16 +520,47 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "1080i59hz"))
   {
-    res->iWidth = 1920;
-    res->iHeight= 1080;
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#endif
+      res->iWidth = 1280;
+      res->iHeight= 720;
+    } else {
+      res->iWidth = 1920;
+      res->iHeight= 1080;
+    }
     res->iScreenWidth = 1920;
     res->iScreenHeight= 1080;
     res->fRefreshRate = 59.940;
     res->dwFlags = D3DPRESENTFLAG_INTERLACED;
   }
+  else if (StringUtils::EqualsNoCase(fromMode, "1080i60hz") || StringUtils::EqualsNoCase(fromMode, "1080i"))
+  {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#endif
+      res->iWidth = 1280;
+      res->iHeight= 720;
+    } else {
+      res->iWidth = 1920;
+      res->iHeight= 1080;
+    }
+    res->iScreenWidth = 1920;
+    res->iScreenHeight= 1080;
+    res->fRefreshRate = 60;
+    res->dwFlags = D3DPRESENTFLAG_INTERLACED;
+  }
   else if (StringUtils::EqualsNoCase(fromMode, "4k2ksmpte"))
   {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
+#else
     if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#endif
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
@@ -516,8 +574,17 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "4k2k23hz"))
   {
-    res->iWidth = 1920;
-    res->iHeight= 1080;
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#endif
+      res->iWidth = 1280;
+      res->iHeight= 720;
+    } else {
+      res->iWidth = 1920;
+      res->iHeight= 1080;
+    }
     res->iScreenWidth = 3840;
     res->iScreenHeight= 2160;
     res->fRefreshRate = 23.976;
@@ -525,7 +592,11 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "4k2k24hz"))
   {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
+#else
     if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#endif
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
@@ -539,7 +610,11 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "4k2k25hz"))
   {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
+#else
     if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#endif
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
@@ -553,8 +628,17 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "4k2k29hz"))
   {
-    res->iWidth = 1920;
-    res->iHeight= 1080;
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#endif
+      res->iWidth = 1280;
+      res->iHeight= 720;
+    } else {
+      res->iWidth = 1920;
+      res->iHeight= 1080;
+    }
     res->iScreenWidth = 3840;
     res->iScreenHeight= 2160;
     res->fRefreshRate = 29.970;
@@ -562,7 +646,11 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "4k2k30hz"))
   {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6) {
+#else
     if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#endif
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
@@ -579,7 +667,6 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     return false;
   }
 
-
   res->iScreen       = 0;
   res->bFullScreen   = true;
   res->iSubtitles    = (int)(0.965 * res->iHeight);
@@ -589,4 +676,3 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
 
   return res->iWidth > 0 && res->iHeight> 0;
 }
-

@@ -159,6 +159,12 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
     case 60:
       switch(res.iScreenWidth)
       {
+        case 720:
+          if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+            SetDisplayResolution("480i");
+          else
+            SetDisplayResolution("480p");
+          break;
         default:
         case 1280:
           SetDisplayResolution("720p");
@@ -169,15 +175,32 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
           else
             SetDisplayResolution("1080p");
           break;
-        case 720:
-          if (!IsHdmiConnected())
-            SetDisplayResolution("480cvbs");
+      }
+      break;
+    case 59:
+      switch(res.iScreenWidth)
+      {
+        default:
+        case 1280:
+          SetDisplayResolution("720p59hz");
+          break;
+        case 1920:
+          if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+            SetDisplayResolution("1080i59hz");
+          else
+            SetDisplayResolution("1080p59hz");
           break;
       }
       break;
     case 50:
       switch(res.iScreenWidth)
       {
+        case 720:
+          if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+            SetDisplayResolution("576i");
+          else
+            SetDisplayResolution("576p");
+          break;
         default:
         case 1280:
           SetDisplayResolution("720p50hz");
@@ -187,10 +210,6 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
             SetDisplayResolution("1080i50hz");
           else
             SetDisplayResolution("1080p50hz");
-          break;
-        case 720:
-          if (!IsHdmiConnected())
-            SetDisplayResolution("576cvbs");
           break;
       }
       break;
@@ -206,8 +225,29 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
           break;
       }
       break;
+    case 29:
+      switch(res.iScreenWidth)
+      {
+        default:
+        case 1920:
+          SetDisplayResolution("1080p29hz");
+          break;
+        case 3840:
+          SetDisplayResolution("4k2k29hz");
+          break;
+      }
+      break;
     case 25:
-      SetDisplayResolution("4k2k25hz");
+      switch(res.iScreenWidth)
+      {
+        default:
+        case 1920:
+          SetDisplayResolution("1080p25hz");
+          break;
+        case 3840:
+          SetDisplayResolution("4k2k25hz");
+          break;
+      }
       break;
     case 24:
       switch(res.iScreenWidth)
@@ -215,12 +255,24 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
         default:
         case 1920:
           SetDisplayResolution("1080p24hz");
-        break;
-        case 4096:
-          SetDisplayResolution("4k2ksmpte");
           break;
         case 3840:
           SetDisplayResolution("4k2k24hz");
+          break;
+        case 4096:
+          SetDisplayResolution("4k2ksmpte");
+          break;
+      }
+      break;
+    case 23:
+      switch(res.iScreenWidth)
+      {
+        default:
+        case 1920:
+          SetDisplayResolution("1080p23hz");
+          break;
+        case 3840:
+          SetDisplayResolution("4k2k23hz");
           break;
       }
       break;
@@ -240,8 +292,10 @@ bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
   }
   else
   {
-    probe_str.push_back("480cvbs");
-    probe_str.push_back("576cvbs");
+    probe_str.push_back("480i");
+    probe_str.push_back("480p");
+    probe_str.push_back("576i");
+    probe_str.push_back("576p");
   }
 
   resolutions.clear();
@@ -264,7 +318,7 @@ bool CEGLNativeTypeAmlogic::GetPreferredResolution(RESOLUTION_INFO *res) const
     if (IsHdmiConnected())
       aml_mode_to_resolution("720p", res);
     else
-      aml_mode_to_resolution("480cvbs", res);
+      aml_mode_to_resolution("480p", res);
   }
 
   return true;

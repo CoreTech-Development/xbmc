@@ -75,6 +75,12 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
     case 600:
       switch(res.iScreenWidth)
       {
+        case 720:
+          if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+            return SetDisplayResolution("480i");
+          else
+            return SetDisplayResolution("480p");
+          break;
         default:
         case 1280:
           return SetDisplayResolution("720p");
@@ -91,15 +97,26 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
       switch(res.iScreenWidth)
       {
         default:
+        case 1280:
+          return SetDisplayResolution("720p59hz");
+          break;
+        case 1920:
           if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
             return SetDisplayResolution("1080i59hz");
           else
             return SetDisplayResolution("1080p59hz");
           break;
       }
+      break;
     case 500:
       switch(res.iScreenWidth)
       {
+        case 720:
+          if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+            return SetDisplayResolution("576i");
+          else
+            return SetDisplayResolution("576p");
+          break;
         default:
         case 1280:
           return SetDisplayResolution("720p50hz");
