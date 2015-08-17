@@ -1794,12 +1794,8 @@ void CDVDPlayer::HandlePlaySpeed()
         double adjust = -1.0; // a unique value
         if (m_clock.GetSpeedAdjust() == 0.0 && m_dvdPlayerAudio->GetLevel() < 5)
           adjust = -0.01;
-        else if (m_clock.GetSpeedAdjust() == 0.0 && m_dvdPlayerAudio->GetLevel() > 95)
-          adjust = 0.01;
 
         if (m_clock.GetSpeedAdjust() < 0 && m_dvdPlayerAudio->GetLevel() > 20)
-          adjust = 0.0;
-        else if (m_clock.GetSpeedAdjust() > 0 && m_dvdPlayerAudio->GetLevel() < 80)
           adjust = 0.0;
 
         if (adjust != -1.0)
@@ -1839,7 +1835,7 @@ void CDVDPlayer::HandlePlaySpeed()
         check = false;
       // skip if frame on screen has not changed
       else if (m_SpeedState.lastpts == m_dvdPlayerVideo->GetCurrentPts() &&
-          fabs(m_SpeedState.lastabstime - CDVDClock::GetAbsoluteClock()) < DVD_MSEC_TO_TIME(1000))
+               (m_SpeedState.lastpts > m_State.dts || m_playSpeed > 0))
         check = false;
 
       if (check)
@@ -2996,7 +2992,7 @@ void CDVDPlayer::GetGeneralInfo(std::string& strGeneralInfo)
       CSingleLock lock(m_StateSection);
       if(m_StateInput.cache_bytes >= 0)
       {
-        strBuf += StringUtils::Format(" cache:%s %2.0f%%"
+        strBuf += StringUtils::Format(" forward:%s %2.0f%%"
                                       , StringUtils::SizeToString(m_StateInput.cache_bytes).c_str()
                                       , m_StateInput.cache_level * 100);
         if(m_playSpeed == 0 || m_caching == CACHESTATE_FULL)
@@ -3032,7 +3028,7 @@ void CDVDPlayer::GetGeneralInfo(std::string& strGeneralInfo)
       CSingleLock lock(m_StateSection);
       if(m_StateInput.cache_bytes >= 0)
       {
-        strBuf += StringUtils::Format(" cache:%s %2.0f%%"
+        strBuf += StringUtils::Format(" forward:%s %2.0f%%"
                                       , StringUtils::SizeToString(m_StateInput.cache_bytes).c_str()
                                       , m_StateInput.cache_level * 100);
         if(m_playSpeed == 0 || m_caching == CACHESTATE_FULL)

@@ -162,6 +162,9 @@ bool CGUIWindowPVRChannels::OnAction(const CAction &action)
 
 bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
 {
+  if (!IsValidMessage(message))
+    return false;
+
   bool bReturn = false;
   switch (message.GetMessage())
   {
@@ -220,6 +223,8 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
       {
         case ObservableMessageChannelGroup:
         case ObservableMessageTimers:
+        case ObservableMessageEpg:
+        case ObservableMessageEpgContainer:
         case ObservableMessageEpgActiveItem:
         case ObservableMessageCurrentItem:
         {

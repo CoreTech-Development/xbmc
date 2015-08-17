@@ -95,6 +95,7 @@ namespace PVR
     virtual void ShowRecordingInfo(CFileItem *item);
     virtual bool UpdateEpgForChannel(CFileItem *item);
     virtual void UpdateSelectedItemPath();
+    virtual bool IsValidMessage(CGUIMessage& message);
     void CheckResumeRecording(CFileItem *item);
 
     static std::map<bool, std::string> m_selectedItemPaths;
@@ -104,5 +105,6 @@ namespace PVR
 
   private:
     CPVRChannelGroupPtr m_group;
+    XbmcThreads::EndTime m_refreshTimeout;
   };
 }

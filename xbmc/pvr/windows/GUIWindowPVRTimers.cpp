@@ -108,6 +108,9 @@ bool CGUIWindowPVRTimers::Update(const std::string &strDirectory, bool updateFil
 
 bool CGUIWindowPVRTimers::OnMessage(CGUIMessage &message)
 {
+  if (!IsValidMessage(message))
+    return false;
+  
   bool bReturn = false;
   switch (message.GetMessage())
   {
@@ -143,6 +146,10 @@ bool CGUIWindowPVRTimers::OnMessage(CGUIMessage &message)
       switch(message.GetParam1())
       {
         case ObservableMessageTimers:
+        case ObservableMessageEpg:
+        case ObservableMessageEpgContainer:
+        case ObservableMessageEpgActiveItem:
+        case ObservableMessageCurrentItem:
         {
           if (IsActive())
             SetInvalid();

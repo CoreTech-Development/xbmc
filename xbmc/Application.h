@@ -147,11 +147,7 @@ public:
 
   bool StartServer(enum ESERVERS eServer, bool bStart, bool bWait = false);
 
-  /*!
-   * @brief Starts the PVR manager and decide if the manager should handle the startup window activation.
-   * @return true, if the startup window activation is handled by the pvr manager, otherwise false
-   */
-  bool StartPVRManager();
+  void StartPVRManager();
   void StopPVRManager();
   bool IsCurrentThread() const;
   void Stop(int exitCode);
@@ -367,7 +363,6 @@ public:
 
   bool SwitchToFullScreen(bool force = false);
 
-  CSplash* GetSplash() { return m_splash; }
   void SetRenderGUI(bool renderGUI);
   bool GetRenderGUI() const { return m_renderGUI; };
 
@@ -448,7 +443,6 @@ protected:
   CFileItemPtr m_stackFileItemToUpdate;
 
   std::string m_prevMedia;
-  CSplash* m_splash;
   ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
   bool m_bInitializing;
   bool m_bPlatformDirectories;
