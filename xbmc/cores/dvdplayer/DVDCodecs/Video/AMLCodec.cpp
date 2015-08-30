@@ -2424,6 +2424,11 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:m_stereo_view(%d)", m_stereo_view);
 #endif
 
+  if (dst_rect.Width() < display.Width() || dst_rect.Height() < display.Height())
+    SysfsUtils::SetInt("/sys/module/di/parameters/bypass_hd", 1);
+  else
+    SysfsUtils::SetInt("/sys/module/di/parameters/bypass_hd", 0);
+
   // goofy 0/1 based difference in aml axis coordinates.
   // fix them.
   dst_rect.x2--;
