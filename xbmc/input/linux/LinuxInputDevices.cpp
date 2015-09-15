@@ -258,15 +258,15 @@ KeyMap keyMap[] = {
   { KEY_YELLOW        , XBMCK_i           },
   { KEY_BLUE          , XBMCK_c           },
   // F16-F24 keys for IR mapping
-  { 316               , XBMCK_F16         },
-  { 317               , XBMCK_F17         },
-  { 318               , XBMCK_F18         },
-  { 319               , XBMCK_F19         },
-  { 320               , XBMCK_F20         },
-  { 321               , XBMCK_F21         },
-  { 322               , XBMCK_F22         },
-  { 323               , XBMCK_F23         },
-  { 324               , XBMCK_F24         },
+  { 142               , XBMCK_F16         },
+  { 143               , XBMCK_F17         },
+  { 144               , XBMCK_F18         },
+  { 145               , XBMCK_F19         },
+  { 146               , XBMCK_F20         },
+  { 147               , XBMCK_F21         },
+  { 148               , XBMCK_F22         },
+  { 149               , XBMCK_F23         },
+  { 150               , XBMCK_F24         },
   // The Little Black Box Remote Additions
   { 384               , XBMCK_LEFT        }, // Red
   { 378               , XBMCK_RIGHT       }, // Green
