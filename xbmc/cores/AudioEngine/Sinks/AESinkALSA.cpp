@@ -1430,6 +1430,14 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
     if (snd_card_get_name(cardNr, &cardName) == 0)
       info.m_displayName = cardName;
 
+#if defined(HAS_LIBAMCODEC) && defined(TARGET_LINUX)
+    // ugly workaround to show DTS / AC3 caps
+    // but don't run into multi channel issues
+    // as we can only open 2 pcm channels
+    if (aml_get_device_type() != AML_DEVICE_TYPE_UNKNOWN)
+      info.m_deviceType = AE_DEVTYPE_IEC958;
+#endif
+
     if (info.m_deviceType == AE_DEVTYPE_HDMI && info.m_displayName.size() > 5 &&
         info.m_displayName.substr(info.m_displayName.size()-5) == " HDMI")
     {
