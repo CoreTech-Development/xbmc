@@ -673,8 +673,6 @@ bool CApplication::Create()
     return false;
   }
 
-  g_peripherals.Initialise();
-
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
   CInputManager::Get().InitializeInputs();
@@ -817,11 +815,25 @@ bool CApplication::CreateGUI()
 
 bool CApplication::InitWindow()
 {
+  RESOLUTION res = CDisplaySettings::Get().GetCurrentResolution();
+
 #ifdef TARGET_DARWIN_OSX
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
   bool bFullScreen = false;
   if (!g_Windowing.CreateNewWindow(CSysInfo::GetAppName(), bFullScreen, CDisplaySettings::Get().GetResolutionInfo(RES_WINDOW), OnEvent))
+  {
+    CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
+    return false;
+  }
+#elif defined(TARGET_ANDROID)
+  // We might come from a refresh rate switch destroying the native window; use the renderer resolution
+  if (g_graphicsContext.GetVideoResolution() != RES_INVALID)
+    res = g_graphicsContext.GetVideoResolution();
+  RESOLUTION_INFO res_info = CDisplaySettings::Get().GetResolutionInfo(res);
+
+  bool bFullScreen = res != RES_WINDOW;
+  if (!g_Windowing.CreateNewWindow(CSysInfo::GetAppName(), bFullScreen, res_info, OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return false;
@@ -841,7 +853,7 @@ bool CApplication::InitWindow()
     return false;
   }
   // set GUI res and force the clear of the screen
-  g_graphicsContext.SetVideoResolution(CDisplaySettings::Get().GetCurrentResolution());
+  g_graphicsContext.SetVideoResolution(res);
   return true;
 }
 
@@ -1116,6 +1128,8 @@ bool CApplication::Initialize()
   // load the language and its translated strings
   if (!LoadLanguage(false))
     return false;
+
+  g_peripherals.Initialise();
 
   // Load curl so curl_global_init gets called before any service threads
   // are started. Unloading will have no effect as curl is never fully unloaded.
