@@ -394,7 +394,6 @@ void CEGLNativeTypeAmlogic::EnableFreeScale()
   SysfsUtils::SetInt("/sys/class/video/disable_video", 1);
   SysfsUtils::SetString("/sys/class/graphics/fb0/free_scale_axis", fsaxis_str);
   SysfsUtils::SetString("/sys/class/graphics/fb0/window_axis", waxis_str);
-  SysfsUtils::SetString("/sys/class/video/axis", waxis_str);
   SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 0x10001);
   SysfsUtils::SetInt("/sys/class/video/disable_video", 2);
 }
@@ -404,7 +403,6 @@ void CEGLNativeTypeAmlogic::DisableFreeScale()
   SysfsUtils::SetInt("/sys/class/video/disable_video", 1);
   SysfsUtils::SetString("/sys/class/graphics/fb0/free_scale_axis", "0 0 0 0");
   SysfsUtils::SetString("/sys/class/graphics/fb0/window_axis", "0 0 0 0");
-  SysfsUtils::SetString("/sys/class/video/axis", "0 0 0 0");
   SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 0);
   SysfsUtils::SetInt("/sys/class/video/disable_video", 0);
 }

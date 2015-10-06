@@ -2344,7 +2344,12 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
 #ifdef TARGET_ANDROID
   display = m_display_rect;
 #else
-  display = gui;
+  std::string use_freescale;
+  SysfsUtils::GetString("/sys/class/graphics/fb0/free_scale", use_freescale);
+  if (use_freescale.find("[0x0]") == std::string::npos)
+    display = m_display_rect;
+  else
+    display = gui;
 #endif
   if (gui != display)
   {
