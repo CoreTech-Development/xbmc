@@ -56,7 +56,6 @@ protected:
 private:
   void SetFramebufferResolution(const RESOLUTION_INFO &res) const;
   void SetFramebufferResolution(int width, int height) const;
-  bool IsHdmiConnected() const;
 
   std::string m_framebuffer_name;
 };
