@@ -691,6 +691,18 @@ case $host in
      use_wayland=no
      USE_STATIC_FFMPEG=1
      ;;
+  aarch64*-*-linux-gnu*)
+     target_platform=target_linux
+     ARCH="aarch64"
+     use_arch="aarch64"
+     use_cpu=cortex-a53
+     use_joystick=no
+     use_neon=yes
+     use_gles=yes
+     use_gl=no
+     use_wayland=no
+     USE_STATIC_FFMPEG=1
+     ;;
   arm*-*linux-android*)
      target_platform=target_android
      use_arch="arm"
