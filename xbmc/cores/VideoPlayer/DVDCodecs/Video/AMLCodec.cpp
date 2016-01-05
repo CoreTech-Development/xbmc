@@ -286,7 +286,9 @@ public:
 #define SYNC_OUTSIDE    (2)
 
 // missing tags
+#ifndef CODEC_TAG_VC_1 // Defined in libamcodec
 #define CODEC_TAG_VC_1  (0x312D4356)
+#endif
 #define CODEC_TAG_RV30  (0x30335652)
 #define CODEC_TAG_RV40  (0x30345652)
 #define CODEC_TAG_MJPEG (0x47504a4d)
