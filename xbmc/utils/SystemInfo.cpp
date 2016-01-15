@@ -1249,7 +1249,7 @@ std::string CSysInfo::GetVersionShort()
 
 std::string CSysInfo::GetVersion()
 {
-  return GetVersionShort() + " Git:" + CCompileInfo::GetSCMID();
+  return GetVersionShort() + "~" + CCompileInfo::GetSCMID();
 }
 
 std::string CSysInfo::GetBuildDate()
