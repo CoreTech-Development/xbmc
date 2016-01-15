@@ -4353,7 +4353,7 @@ std::string CGUIInfoManager::GetVersionShort(void)
 
 std::string CGUIInfoManager::GetVersion()
 {
-  return GetVersionShort() + " Git:" + CCompileInfo::GetSCMID();
+  return GetVersionShort() + "~" + CCompileInfo::GetSCMID();
 }
 
 std::string CGUIInfoManager::GetBuild()
