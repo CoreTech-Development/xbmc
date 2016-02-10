@@ -30,6 +30,7 @@ class CSetting;
 namespace PERIPHERALS
 {
   class CGUIDialogPeripheralSettings;
+  class CPeripheralBus;
 
   typedef enum
   {
@@ -43,7 +44,7 @@ namespace PERIPHERALS
     friend class CGUIDialogPeripheralSettings;
 
   public:
-    CPeripheral(const PeripheralScanResult& scanResult);
+    CPeripheral(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
     virtual ~CPeripheral(void);
 
     bool operator ==(const CPeripheral &right) const;
@@ -185,5 +186,6 @@ namespace PERIPHERALS
     std::vector<CPeripheral *>       m_subDevices;
     std::map<std::string, PeripheralDeviceSetting> m_settings;
     std::set<std::string>             m_changedSettings;
+    CPeripheralBus*                  m_bus;
   };
 }
