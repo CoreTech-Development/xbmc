@@ -401,7 +401,12 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "1080p") || StringUtils::EqualsNoCase(fromMode, "1080p60hz"))
   {
-    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6)
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3)
+#endif
+    {
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
@@ -415,7 +420,12 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "1080p23hz"))
   {
-    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6)
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3)
+#endif
+    {
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
@@ -429,7 +439,12 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "1080p24hz"))
   {
-    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6)
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3)
+#endif
+    {
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
@@ -443,7 +458,12 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "1080p30hz"))
   {
-    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6)
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3)
+#endif
+    {
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
@@ -457,7 +477,12 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "1080p50hz"))
   {
-    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6)
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3)
+#endif
+    {
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
@@ -471,7 +496,12 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "1080p59hz"))
   {
-    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6)
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3)
+#endif
+    {
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
@@ -485,7 +515,12 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "1080i") || StringUtils::EqualsNoCase(fromMode, "1080i60hz"))
   {
-    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6)
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3)
+#endif
+    {
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
@@ -499,7 +534,12 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "1080i50hz"))
   {
-    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6)
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3)
+#endif
+    {
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
@@ -513,7 +553,12 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   }
   else if (StringUtils::EqualsNoCase(fromMode, "1080i59hz"))
   {
-    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3) {
+#if defined(TARGET_ANDROID)
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M6)
+#else
+    if (aml_get_device_type() <= AML_DEVICE_TYPE_M3)
+#endif
+    {
       res->iWidth = 1280;
       res->iHeight= 720;
     } else {
