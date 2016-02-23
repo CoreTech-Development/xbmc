@@ -198,6 +198,7 @@ enum AML_DEVICE_TYPE aml_get_device_type()
   static enum AML_DEVICE_TYPE aml_device_type = AML_DEVICE_TYPE_UNINIT;
   if (aml_device_type == AML_DEVICE_TYPE_UNINIT)
   {
+#if !defined(__aarch64__)
     std::string cpu_hardware = g_cpuInfo.getCPUHardware();
     if (cpu_hardware.find("MESON-M1") != std::string::npos)
       aml_device_type = AML_DEVICE_TYPE_M1;
@@ -211,6 +212,10 @@ enum AML_DEVICE_TYPE aml_get_device_type()
       aml_device_type = AML_DEVICE_TYPE_M8B;
     else if ((aml_support_h264_4k2k()) && (aml_support_hevc()) && (aml_support_hevc_4k2k()))
       aml_device_type = AML_DEVICE_TYPE_M8M2;
+#else
+    if ((aml_support_h264_4k2k()) && (aml_support_hevc()) && (aml_support_hevc_4k2k()))
+      aml_device_type = AML_DEVICE_TYPE_GXB;
+#endif
     else
       aml_device_type = AML_DEVICE_TYPE_UNKNOWN;
   }
