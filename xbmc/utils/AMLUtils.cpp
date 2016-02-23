@@ -225,7 +225,12 @@ enum AML_DEVICE_TYPE aml_get_device_type()
 
 void aml_set_audio_passthrough(bool passthrough)
 {
-  SysfsUtils::SetInt("/sys/class/audiodsp/digital_raw", passthrough ? 2:0);
+  if (aml_present() && aml_get_device_type() >= AML_DEVICE_TYPE_M1)
+  {
+    // m1 uses 1, m3 and above uses 2
+    int raw = aml_get_device_type() == AML_DEVICE_TYPE_M1 ? 1:2;
+    SysfsUtils::SetInt("/sys/class/audiodsp/digital_raw", passthrough ? raw:0);
+  }
 }
 
 void aml_probe_hdmi_audio()
