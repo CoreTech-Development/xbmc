@@ -228,9 +228,16 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
   // switch display resolution
   SysfsUtils::SetString("/sys/class/display/mode", mode.c_str());
 
+  DisableFreeScale();
+
   RESOLUTION_INFO res;
   aml_mode_to_resolution(mode.c_str(), &res);
   SetFramebufferResolution(res);
+
+  if (StringUtils::StartsWith(mode, "4k2k"))
+  {
+    EnableFreeScale();
+  }
 
   return true;
 }
@@ -286,7 +293,15 @@ void CEGLNativeTypeAmlogic::DisableFreeScale()
 
 void CEGLNativeTypeAmlogic::SetFramebufferResolution(const RESOLUTION_INFO &res) const
 {
-  SetFramebufferResolution(res.iScreenWidth, res.iScreenHeight);
+  std::string mode;
+  SysfsUtils::GetString("/sys/class/display/mode", mode);
+
+  if (StringUtils::StartsWith(mode, "4k2k"))
+  {
+    SetFramebufferResolution(res.iWidth, res.iHeight);
+  } else {
+    SetFramebufferResolution(res.iScreenWidth, res.iScreenHeight);
+  }
 }
 
 void CEGLNativeTypeAmlogic::SetFramebufferResolution(int width, int height) const
