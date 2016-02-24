@@ -342,7 +342,7 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
     SetFramebufferResolution(res);
   }
 
-  if ((StringUtils::StartsWith(mode, "1080")) && (aml_get_device_type() <= AML_DEVICE_TYPE_M3))
+  if (StringUtils::StartsWith(mode, "4k2k") || (StringUtils::StartsWith(mode, "1080") && aml_get_device_type() <= AML_DEVICE_TYPE_M3))
   {
     EnableFreeScale();
   }
@@ -401,7 +401,15 @@ void CEGLNativeTypeAmlogic::DisableFreeScale()
 
 void CEGLNativeTypeAmlogic::SetFramebufferResolution(const RESOLUTION_INFO &res) const
 {
-  SetFramebufferResolution(res.iScreenWidth, res.iScreenHeight);
+  std::string mode;
+  SysfsUtils::GetString("/sys/class/display/mode", mode);
+
+  if (StringUtils::StartsWith(mode, "4k2k"))
+  {
+    SetFramebufferResolution(res.iWidth, res.iHeight);
+  } else {
+    SetFramebufferResolution(res.iScreenWidth, res.iScreenHeight);
+  }
 }
 
 void CEGLNativeTypeAmlogic::SetFramebufferResolution(int width, int height) const
