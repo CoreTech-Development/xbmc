@@ -103,13 +103,25 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
           }
           break;
         case 1280:
-          return SetDisplayResolution("720p");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            return SetDisplayResolution("720p60hz");
+          else
+            return SetDisplayResolution("720p");
           break;
         case 1920:
           if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
-            return SetDisplayResolution("1080i");
+            if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+              return SetDisplayResolution("1080i60hz");
+            else
+              return SetDisplayResolution("1080i");
           else
-            return SetDisplayResolution("1080p");
+            if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+              return SetDisplayResolution("1080p60hz");
+            else
+              return SetDisplayResolution("1080p");
+          break;
+       case 3840:
+          return SetDisplayResolution("2160p60hz420");
           break;
       }
       break;
@@ -136,13 +148,19 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
           else
             return SetDisplayResolution("1080p50hz");
           break;
+        case 3840:
+          return SetDisplayResolution("2160p50hz420");
+          break;
       }
       break;
     case 300:
       switch(res.iScreenWidth)
       {
         case 3840:
-          return SetDisplayResolution("4k2k30hz");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            return SetDisplayResolution("2160p30hz");
+          else
+            return SetDisplayResolution("4k2k30hz");
           break;
         default:
           return SetDisplayResolution("1080p30hz");
@@ -153,7 +171,10 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
       switch(res.iScreenWidth)
       {
         case 3840:
-          return SetDisplayResolution("4k2k29hz");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            return SetDisplayResolution("2160p29hz");
+          else
+            return SetDisplayResolution("4k2k29hz");
           break;
         default:
           return SetDisplayResolution("1080p29hz");
@@ -164,7 +185,10 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
       switch(res.iScreenWidth)
       {
         case 3840:
-          return SetDisplayResolution("4k2k25hz");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            return SetDisplayResolution("2160p25hz");
+          else
+            return SetDisplayResolution("4k2k25hz");
           break;
         default:
           return SetDisplayResolution("1080p25hz");
@@ -175,10 +199,16 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
       switch(res.iScreenWidth)
       {
         case 3840:
-          return SetDisplayResolution("4k2k24hz");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            return SetDisplayResolution("2160p24hz");
+          else
+            return SetDisplayResolution("4k2k24hz");
           break;
         case 4096:
-          return SetDisplayResolution("4k2ksmpte");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            return SetDisplayResolution("smpte24hz");
+          else
+            return SetDisplayResolution("4k2ksmpte");
           break;
         default:
           return SetDisplayResolution("1080p24hz");
@@ -189,7 +219,10 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
       switch(res.iScreenWidth)
       {
         case 3840:
-          return SetDisplayResolution("4k2k23hz");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            return SetDisplayResolution("2160p23hz");
+          else
+            return SetDisplayResolution("4k2k23hz");
           break;
         default:
           return SetDisplayResolution("1080p23hz");

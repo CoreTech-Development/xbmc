@@ -56,7 +56,13 @@ bool CEGLNativeTypeAmlogic::CheckCompatibility()
 
   SysfsUtils::GetString(modalias, name);
   StringUtils::Trim(name);
-  if (name == "platform:mesonfb")
+  std::vector<std::string> mesonfb;
+
+  // Checking for old kernels and new 3.14 (meson-fb)
+  mesonfb.push_back("platform:mesonfb");
+  mesonfb.push_back("meson-fb");
+
+  if (StringUtils::ContainsKeyword(name, mesonfb))
     return true;
   return false;
 }
@@ -183,13 +189,25 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
           }
           break;
         case 1280:
-          SetDisplayResolution("720p");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            SetDisplayResolution("720p60hz");
+          else
+            SetDisplayResolution("720p");
           break;
         case 1920:
           if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
-            SetDisplayResolution("1080i");
+            if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+              SetDisplayResolution("1080i60hz");
+            else
+              SetDisplayResolution("1080i");
           else
-            SetDisplayResolution("1080p");
+            if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+              SetDisplayResolution("1080p60hz");
+            else
+              SetDisplayResolution("1080p");
+          break;
+        case 3840:
+          SetDisplayResolution("2160p60hz420");
           break;
       }
       break;
@@ -216,13 +234,19 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
           else
             SetDisplayResolution("1080p50hz");
           break;
+        case 3840:
+          SetDisplayResolution("2160p50hz420");
+          break;
       }
       break;
     case 30:
       switch(res.iScreenWidth)
       {
         case 3840:
-          SetDisplayResolution("4k2k30hz");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            SetDisplayResolution("2160p30hz");
+          else
+            SetDisplayResolution("4k2k30hz");
           break;
         default:
           SetDisplayResolution("1080p30hz");
@@ -233,7 +257,10 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
       switch(res.iScreenWidth)
       {
         case 3840:
-          SetDisplayResolution("4k2k29hz");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            SetDisplayResolution("2160p29hz");
+          else
+            SetDisplayResolution("4k2k29hz");
           break;
         default:
           SetDisplayResolution("1080p29hz");
@@ -244,7 +271,10 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
       switch(res.iScreenWidth)
       {
         case 3840:
-          SetDisplayResolution("4k2k25hz");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            SetDisplayResolution("2160p25hz");
+          else
+            SetDisplayResolution("4k2k25hz");
           break;
         default:
           SetDisplayResolution("1080p25hz");
@@ -255,10 +285,16 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
       switch(res.iScreenWidth)
       {
         case 3840:
-          SetDisplayResolution("4k2k24hz");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            SetDisplayResolution("2160p24hz");
+          else
+            SetDisplayResolution("4k2k24hz");
           break;
         case 4096:
-          SetDisplayResolution("4k2ksmpte");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            SetDisplayResolution("smpte24hz");
+          else
+            SetDisplayResolution("4k2ksmpte");
           break;
         default:
           SetDisplayResolution("1080p24hz");
@@ -269,7 +305,10 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
       switch(res.iScreenWidth)
       {
         case 3840:
-          SetDisplayResolution("4k2k23hz");
+          if (aml_get_device_type() > AML_DEVICE_TYPE_M8M2)
+            SetDisplayResolution("2160p23hz");
+          else
+            SetDisplayResolution("4k2k23hz");
           break;
         default:
           SetDisplayResolution("1080p23hz");
@@ -342,7 +381,7 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
     SetFramebufferResolution(res);
   }
 
-  if (StringUtils::StartsWith(mode, "4k2k") || (StringUtils::StartsWith(mode, "1080") && aml_get_device_type() <= AML_DEVICE_TYPE_M3))
+  if (StringUtils::StartsWith(mode, "4k2k") || StringUtils::StartsWith(mode, "smpte") || StringUtils::StartsWith(mode, "2160") || (StringUtils::StartsWith(mode, "1080") && aml_get_device_type() <= AML_DEVICE_TYPE_M3))
   {
     EnableFreeScale();
   }
@@ -404,7 +443,7 @@ void CEGLNativeTypeAmlogic::SetFramebufferResolution(const RESOLUTION_INFO &res)
   std::string mode;
   SysfsUtils::GetString("/sys/class/display/mode", mode);
 
-  if (StringUtils::StartsWith(mode, "4k2k"))
+  if (StringUtils::StartsWith(mode, "4k2k") || StringUtils::StartsWith(mode, "smpte") || StringUtils::StartsWith(mode, "2160"))
   {
     SetFramebufferResolution(res.iWidth, res.iHeight);
   } else {
