@@ -156,6 +156,32 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
       switch(res.iScreenWidth)
       {
         default:
+        case 720:
+          if (!aml_IsHdmiConnected())
+          {
+            if (res.iScreenHeight == 480)
+              SetDisplayResolution("480cvbs");
+            else
+              SetDisplayResolution("576cvbs");
+          }
+          else
+          {
+            if (res.iScreenHeight == 480)
+            {
+              if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+                SetDisplayResolution("480i");
+              else
+                SetDisplayResolution("480p");
+            }
+            else
+            {
+              if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+                SetDisplayResolution("576i");
+              else
+                SetDisplayResolution("576p");
+            }
+          }
+          break;
         case 1280:
           SetDisplayResolution("720p");
           break;
@@ -167,6 +193,16 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
           break;
       }
       break;
+    case 59:
+      switch(res.iScreenWidth)
+      {
+        default:
+          if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+            SetDisplayResolution("1080i59hz");
+          else
+            SetDisplayResolution("1080p59hz");
+          break;
+      }
     case 50:
       switch(res.iScreenWidth)
       {
@@ -183,10 +219,62 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
       }
       break;
     case 30:
-      SetDisplayResolution("1080p30hz");
+      switch(res.iScreenWidth)
+      {
+        case 3840:
+          SetDisplayResolution("4k2k30hz");
+          break;
+        default:
+          SetDisplayResolution("1080p30hz");
+          break;
+      }
+      break;
+    case 29:
+      switch(res.iScreenWidth)
+      {
+        case 3840:
+          SetDisplayResolution("4k2k29hz");
+          break;
+        default:
+          SetDisplayResolution("1080p29hz");
+          break;
+      }
+      break;
+    case 25:
+      switch(res.iScreenWidth)
+      {
+        case 3840:
+          SetDisplayResolution("4k2k25hz");
+          break;
+        default:
+          SetDisplayResolution("1080p25hz");
+          break;
+      }
       break;
     case 24:
-      SetDisplayResolution("1080p24hz");
+      switch(res.iScreenWidth)
+      {
+        case 3840:
+          SetDisplayResolution("4k2k24hz");
+          break;
+        case 4096:
+          SetDisplayResolution("4k2ksmpte");
+          break;
+        default:
+          SetDisplayResolution("1080p24hz");
+          break;
+      }
+      break;
+    case 23:
+      switch(res.iScreenWidth)
+      {
+        case 3840:
+          SetDisplayResolution("4k2k23hz");
+          break;
+        default:
+          SetDisplayResolution("1080p23hz");
+          break;
+      }
       break;
   }
 
@@ -195,9 +283,16 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
 
 bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
-  std::string valstr;
-  SysfsUtils::GetString("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr);
-  std::vector<std::string> probe_str = StringUtils::Split(valstr, "\n");
+  std::vector<std::string> probe_str;
+  if (aml_IsHdmiConnected())
+  {
+    std::string valstr;
+    SysfsUtils::GetString("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr);
+    probe_str = StringUtils::Split(valstr, "\n");
+  } else {
+    probe_str.push_back("480cvbs");
+    probe_str.push_back("576cvbs");
+  }
 
   resolutions.clear();
   RESOLUTION_INFO res;
@@ -215,8 +310,11 @@ bool CEGLNativeTypeAmlogic::GetPreferredResolution(RESOLUTION_INFO *res) const
   // check display/mode, it gets defaulted at boot
   if (!GetNativeResolution(res))
   {
-    // punt to 720p if we get nothing
-    aml_mode_to_resolution("720p", res);
+    // punt to 720p or 480cvbs if we get nothing
+    if (aml_IsHdmiConnected())
+      aml_mode_to_resolution("720p", res);
+    else
+      aml_mode_to_resolution("480cvbs", res);
   }
 
   return true;
