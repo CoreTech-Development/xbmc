@@ -18,7 +18,6 @@
  *
  */
 
-#include <limits.h>
 #include "threads/SystemClock.h"
 #include "FileCache.h"
 #include "threads/Thread.h"
@@ -37,6 +36,9 @@
 #include <cassert>
 #include <algorithm>
 #include <memory>
+
+#include <limits.h>
+#include <XMemUtils.h>
 
 using namespace XFILE;
 
@@ -215,8 +217,8 @@ bool CFileCache::Open(const CURL& url)
         cacheSize = cacheRam;
       }
 
-      unsigned int frontCache = static_cast<unsigned int>(cacheSize * 0.75);
-      unsigned int backCache = cacheSize - frontCache;
+      unsigned int backCache = static_cast<unsigned int>(cacheSize * 0.75);
+      unsigned int frontCache = cacheSize - backCache;
       
       if (m_flags & READ_MULTI_STREAM)
       {
@@ -224,7 +226,7 @@ bool CFileCache::Open(const CURL& url)
         frontCache /= 2;
         backCache /= 2;
       }
-      m_pCache = new CCircularCache(frontCache, std::max<unsigned int>(backCache, 1024 * 1024));
+      m_pCache = new CCircularCache(std::max<unsigned int>(frontCache, 1024 * 1024), backCache);
     }
 
     if (m_flags & READ_MULTI_STREAM)
