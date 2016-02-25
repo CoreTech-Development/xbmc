@@ -4514,7 +4514,7 @@ void CApplication::Process()
     std::string strSysExecPy = CSpecialProtocol::TranslatePath("special://xbmc/sysexec.py");
 
     if (XFILE::CFile::Exists(strSysExecPy))
-      CScriptInvocationManager::Get().ExecuteAsync(strSysExecPy);
+      CScriptInvocationManager::GetInstance().ExecuteAsync(strSysExecPy);
     else
       CLog::Log(LOGDEBUG, "no xbmc sysexec.py (%s) found, skipping", strSysExecPy.c_str());
 
