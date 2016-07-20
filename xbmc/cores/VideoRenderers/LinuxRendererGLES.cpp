@@ -3295,18 +3295,13 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
       return false;
   }
 
-#if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
-  if(method == VS_INTERLACEMETHOD_DEINTERLACE
-  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
-  || method == VS_INTERLACEMETHOD_SW_BLEND)
-#else
-  if(method == VS_INTERLACEMETHOD_SW_BLEND
+  if(method == VS_INTERLACEMETHOD_YADIF
+  || method == VS_INTERLACEMETHOD_YADIF_HALF
   || method == VS_INTERLACEMETHOD_RENDER_BOB
+  || method == VS_INTERLACEMETHOD_SW_FFMPEG
+  || method == VS_INTERLACEMETHOD_SW_BLEND
   || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
-#endif
     return true;
-
-  return false;
 }
 
 bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
@@ -3385,8 +3380,8 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
   if(m_renderMethod & RENDER_IMXMAP)
     return VS_INTERLACEMETHOD_IMX_FASTMOTION;
 
-#if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
-  return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
+#if (defined(__i386__) || defined(__x86_64__) || defined(HAS_LIBAMCODEC))
+  return VS_INTERLACEMETHOD_YADIF;
 #else
   return VS_INTERLACEMETHOD_RENDER_BOB;
 #endif

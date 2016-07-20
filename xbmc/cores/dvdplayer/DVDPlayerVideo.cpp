@@ -553,9 +553,9 @@ void CDVDPlayerVideo::Process()
 
       if (mDeintMode != VS_DEINTERLACEMODE_OFF)
       {
-        if (mInt == VS_INTERLACEMETHOD_DEINTERLACE)
+        if (mInt == VS_INTERLACEMETHOD_YADIF)
           mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY;
-        else if(mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+        else if(mInt == VS_INTERLACEMETHOD_YADIF_HALF)
           mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED;
 
         if (mDeintMode == VS_DEINTERLACEMODE_AUTO && mFilters)
@@ -678,7 +678,14 @@ void CDVDPlayerVideo::Process()
                 sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
                 bPostProcessDeint = true;
               }
-            }
+              else if(mInt == VS_INTERLACEMETHOD_SW_FFMPEG)
+              {
+                if (!sPostProcessType.empty())
+                  sPostProcessType += ",";
+                sPostProcessType += "ffmpegdeint";
+                bPostProcessDeint = true;
+              }
+	    }
 
             if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_PostProcess)
             {
