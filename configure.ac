@@ -836,8 +836,8 @@ elif test "$use_arch" = "arm"; then
         use_cpu=cortex-a8])
   else
     if test "$use_neon" = "yes"; then 
-      CFLAGS="$CFLAGS -mfpu=neon -mvectorize-with-neon-quad"
-      CXXFLAGS="$CXXFLAGS -mfpu=neon -mvectorize-with-neon-quad"
+      CFLAGS="$CFLAGS -mfpu=neon -funsafe-math-optimizations -mvectorize-with-neon-quad"
+      CXXFLAGS="$CXXFLAGS -mfpu=neon -funsafe-math-optimizations -mvectorize-with-neon-quad"
     fi
   fi
 fi
