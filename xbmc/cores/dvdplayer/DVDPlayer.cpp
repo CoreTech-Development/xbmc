@@ -3529,6 +3529,16 @@ bool CDVDPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
       }
     }
   }
+  
+  if (m_pInputStream)
+  {
+    std::string filename = m_pInputStream->GetFileName();
+    if (StringUtils::EndsWithNoCase(filename, "vob"))
+    {
+      CLog::Log(LOGDEBUG, "CDVDPlayer::OpenVideoStream -- %s", filename.c_str());
+      hint.software = true;
+    }
+  }
 
   CDVDInputStream::IMenus* pMenus = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream);
   if(pMenus && pMenus->IsInMenu())
