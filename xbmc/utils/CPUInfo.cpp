@@ -99,6 +99,11 @@
 
 #include "utils/StringUtils.h"
 
+#if defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
+#include "utils/SysfsUtils.h"
+#endif
+
 // In milliseconds
 #define MINIMUM_TIME_BETWEEN_READS 500
 
@@ -617,7 +622,10 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
     if (!ret)
     {
       ret = fscanf(m_fProcTemperature, "%d", &value);
-      value = value / 1000;
+#if defined(HAS_LIBAMCODEC)
+      if (!aml_present())
+#endif
+        value = value / 1000;
       scale = 'c';
       ret++;
     }
@@ -782,6 +790,30 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   char buf[256];
   if (!fgets(buf, sizeof(buf), m_fProcStat))
     return false;
+
+#if defined(HAS_LIBAMCODEC)
+  // If the CPU is not online, then reset its stats or it won't show 0 in the OSD (required on Amlogic Meson8)
+  if (aml_present())
+  {
+    int i, isOnline;
+    char onlinePath[128];
+    for (i = 0; i < m_cpuCount; i++)
+    {
+      sprintf(onlinePath, "/sys/devices/system/cpu/cpu%d/online", i);
+      SysfsUtils::GetInt(onlinePath, isOnline);
+      if (isOnline == 0)
+      {
+        std::map<int, CoreInfo>::iterator iterReset = m_cores.find(i);
+        iterReset->second.m_user = 0;
+        iterReset->second.m_nice = 0;
+        iterReset->second.m_system = 0;
+        iterReset->second.m_idle = 0;
+        iterReset->second.m_io = 0;
+        iterReset->second.m_fPct = 0.0f;
+      }
+    }
+  }
+#endif
 
   int num = sscanf(buf, "cpu %llu %llu %llu %llu %llu %*s\n", &user, &nice, &system, &idle, &io);
   if (num < 5)
