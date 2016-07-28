@@ -15440,6 +15440,16 @@ msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
 msgstr ""
 
+#: system/settings/settings.xml
+msgctxt "#38024"
+msgid "Support browsing into archives"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38025"
+msgid "Allow viewing and playing files in archives (e.g. zip, rar)"
+msgstr ""
+
 #: system/peripherals.xml
 msgctxt "#36033"
 msgid "Action when switching to another source"
