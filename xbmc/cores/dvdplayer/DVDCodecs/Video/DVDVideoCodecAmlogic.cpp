@@ -92,7 +92,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case AV_CODEC_ID_H264:
       if ((!aml_support_h264_4k2k()) && ((m_hints.width > 1920) || (m_hints.height > 1088)))
       {
-        // 4K is supported only on Amlogic S802/S812 chip
+        // 4K is supported only on Amlogic S802, S812 and S905.
         return false;
       }
       m_pFormatName = "am-h264";
@@ -147,11 +147,11 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       if (aml_support_hevc()) {
         if (!aml_support_hevc_4k2k() && ((m_hints.width > 1920) || (m_hints.height > 1088)))
         {
-          // 4K HEVC is supported only on Amlogic S812 chip
+          // 4K HEVC is supported only on Amlogic S812 and S905.
           return false;
         }
       } else {
-        // HEVC supported only on S805 and S812.
+        // HEVC supported only on S805, S812 and S905.
         return false;
       }
       m_pFormatName = "am-h265";
