@@ -74,6 +74,14 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
   if (res.strId == mode)
     return false;
 
+  if (res.iScreenWidth == 720 && !aml_IsHdmiConnected())
+  {
+    if (res.iScreenHeight == 480)
+      return SetDisplayResolution("480cvbs");
+    else
+      return SetDisplayResolution("576cvbs");
+  }
+
   return SetDisplayResolution(res.strId.c_str());
 }
 

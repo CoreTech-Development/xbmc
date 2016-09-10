@@ -147,6 +147,14 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
   if (res.strId == mode)
     return false;
 
+  if (res.iScreenWidth == 720 && !aml_IsHdmiConnected())
+  {
+    if (res.iScreenHeight == 480)
+      return SetDisplayResolution("480cvbs");
+    else
+      return SetDisplayResolution("576cvbs");
+  }
+
   return SetDisplayResolution(res.strId.c_str());
 }
 
@@ -172,8 +180,11 @@ bool CEGLNativeTypeAmlogic::GetPreferredResolution(RESOLUTION_INFO *res) const
   // check display/mode, it gets defaulted at boot
   if (!GetNativeResolution(res))
   {
-    // punt to 720p if we get nothing
-    aml_mode_to_resolution("720p", res);
+    // punt to 480cvbs or 720p if we get nothing
+    if (!aml_IsHdmiConnected())
+      aml_mode_to_resolution("480cvbs", res);
+    else
+      aml_mode_to_resolution("720p", res);
   }
 
   return true;
