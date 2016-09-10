@@ -56,7 +56,13 @@ bool CEGLNativeTypeAmlogic::CheckCompatibility()
 
   SysfsUtils::GetString(modalias, name);
   StringUtils::Trim(name);
-  if (name == "platform:mesonfb")
+  std::vector<std::string> mesonfb;
+
+  // Checking for old kernels and new 3.14 (meson-fb)
+  mesonfb.push_back("platform:mesonfb");
+  mesonfb.push_back("meson-fb");
+
+  if (StringUtils::ContainsKeyword(name, mesonfb))
     return true;
   return false;
 }
@@ -209,7 +215,7 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
   aml_mode_to_resolution(mode.c_str(), &res);
   SetFramebufferResolution(res);
 
-  if (StringUtils::StartsWith(mode, "4k2k"))
+  if (StringUtils::StartsWith(mode, "4k2k") || StringUtils::StartsWith(mode, "smpte") || StringUtils::StartsWith(mode, "2160"))
   {
     EnableFreeScale();
   }
@@ -271,7 +277,7 @@ void CEGLNativeTypeAmlogic::SetFramebufferResolution(const RESOLUTION_INFO &res)
   std::string mode;
   SysfsUtils::GetString("/sys/class/display/mode", mode);
 
-  if (StringUtils::StartsWith(mode, "4k2k"))
+  if (StringUtils::StartsWith(mode, "4k2k") || StringUtils::StartsWith(mode, "smpte") || StringUtils::StartsWith(mode, "2160"))
   {
     SetFramebufferResolution(res.iWidth, res.iHeight);
   } else {
