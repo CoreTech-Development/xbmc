@@ -166,6 +166,10 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         // HEVC supported only on S805, S812 and S905.
         return false;
       }
+      if ((hints.profile == FF_PROFILE_HEVC_MAIN_10) && !aml_support_hevc_10bit())
+      {
+        return false;
+      }
       m_pFormatName = "am-h265";
       if (m_hints.extradata)
       {
