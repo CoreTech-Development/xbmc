@@ -3023,7 +3023,8 @@ void CApplication::Stop(int exitCode)
     // stop all remaining scripts; must be done after skin has been unloaded,
     // not before some windows still need it when deinitializing during skin
     // unloading
-    CScriptInvocationManager::GetInstance().Uninitialize();
+    if (m_ExitCode == EXITCODE_QUIT)
+        CScriptInvocationManager::GetInstance().Uninitialize();
 
     g_Windowing.DestroyRenderSystem();
     g_Windowing.DestroyWindow();
