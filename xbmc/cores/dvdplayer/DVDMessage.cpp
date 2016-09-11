@@ -91,7 +91,7 @@ bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int sou
 
 void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, unsigned int source)
 {
-  while(!Wait(100, source))
+  while(!Wait(200, source))
   {
     if(abort && *abort)
       return;
