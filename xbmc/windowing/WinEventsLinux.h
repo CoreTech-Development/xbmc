@@ -19,6 +19,7 @@
  *
  */
 
+#include <memory>
 #include "windowing/WinEvents.h"
 #include "input/linux/LinuxInputDevices.h"
 
@@ -42,6 +43,7 @@ public:
 private:
   static bool m_initialized;
   static CLinuxInputDevices m_devices;
+  std::unique_ptr<CLinuxInputDevicesCheckHotplugged> m_checkHotplug;
   static std::map<int, int> m_altMap;
   static std::map<int, int> m_keyPadMap;
 };

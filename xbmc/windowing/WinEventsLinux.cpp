@@ -58,6 +58,7 @@ bool CWinEventsLinux::MessagePump()
   if (!m_initialized)
   {
     m_devices.InitAvailable();
+    m_checkHotplug = std::unique_ptr<CLinuxInputDevicesCheckHotplugged>(new CLinuxInputDevicesCheckHotplugged(m_devices));
 
     // Mapping of ALT-XXX of codepage 437 to unicode
     m_altMap[130] = 0x00E9;
