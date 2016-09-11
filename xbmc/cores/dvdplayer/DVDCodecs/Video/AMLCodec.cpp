@@ -1994,7 +1994,7 @@ void CAMLCodec::Process()
         if (abs_error > 0)
         {
           //CLog::Log(LOGDEBUG, "CAMLCodec::Process pts diff = %f", error);
-          if (abs_error > 0.150)
+          if (abs_error > 0.300)
           {
             // big error so try to reset pts_pcrscr
             // do not reset if the error is very big,
