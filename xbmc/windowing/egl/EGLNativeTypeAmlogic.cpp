@@ -173,7 +173,11 @@ bool CEGLNativeTypeAmlogic::GetPreferredResolution(RESOLUTION_INFO *res) const
   if (!GetNativeResolution(res))
   {
     // punt to 720p if we get nothing
+#if defined(__aarch64__)
+    aml_mode_to_resolution("720p60hz", res);
+#else
     aml_mode_to_resolution("720p", res);
+#endif
   }
 
   return true;
