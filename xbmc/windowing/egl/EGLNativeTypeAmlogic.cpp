@@ -190,7 +190,11 @@ bool CEGLNativeTypeAmlogic::GetPreferredResolution(RESOLUTION_INFO *res) const
     if (!aml_IsHdmiConnected())
       aml_mode_to_resolution("480cvbs", res);
     else
-      aml_mode_to_resolution("720p", res);
+      #if defined(__aarch64__)
+        aml_mode_to_resolution("720p60hz", res);
+      #else
+        aml_mode_to_resolution("720p", res);
+      #endif
   }
 
   return true;
