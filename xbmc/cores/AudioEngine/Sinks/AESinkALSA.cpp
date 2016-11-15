@@ -27,6 +27,9 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
+#if defined(HAS_LIBAMCODEC)
+#include <unistd.h>
+#endif
 
 #include "AESinkALSA.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -540,37 +543,60 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 #if defined(HAS_LIBAMCODEC)
   if (aml_present())
   {
-    aml_set_audio_passthrough(m_passthrough);
+    int aml_digital_codec = 0;
 
-    int aml_digital_codec;
-    switch(format.m_dataFormat)
+    if (m_passthrough)
     {
-      case AE_FMT_AC3:
-        aml_digital_codec = 2;
-        break;
+      /* Open 2 channels at device 0 to enable output to HDMI */
+      ALSAConfig m_inconfig, m_outconfig;
+      snd_config_t *config;
+      m_inconfig = inconfig;
+      m_inconfig.channels = 2;
+      snd_config_copy(&config, snd_config);
+      if (access("/proc/asound/AMLM8AUDIO", R_OK) == 0)
+      {
+        OpenPCMDevice("hw:AMLM8AUDIO,0", "", m_inconfig.channels, &m_pcm, config);
+      } else {
+        OpenPCMDevice("hw:AMLDUMMYCODEC,0", "", m_inconfig.channels, &m_pcm, config);
+      }
+      snd_config_delete(config);
+      InitializeHW(m_inconfig, m_outconfig);
 
-      case AE_FMT_DTS:
-        aml_digital_codec = 3;
-        break;
+      if (access("/proc/asound/AMLM8AUDIO", R_OK) == 0)
+      {
+        /* Passthrough is supported only by device 1 */
+        device = "hw:AMLM8AUDIO,1";
+      }
 
-      case AE_FMT_EAC3:
-        aml_digital_codec = 4;
-        break;
+      switch(format.m_dataFormat)
+      {
+        case AE_FMT_AC3:
+          aml_digital_codec = 2;
+          break;
 
-      case AE_FMT_DTSHD:
-        aml_digital_codec = 8;
-        break;
+        case AE_FMT_DTS:
+          aml_digital_codec = 3;
+          break;
 
-      case AE_FMT_TRUEHD:
-        aml_digital_codec = 7;
-        break;
+        case AE_FMT_EAC3:
+          aml_digital_codec = 4;
+          inconfig.sampleRate = 48000;
+          break;
 
-      default:
-        if (inconfig.channels > 2)
-          aml_digital_codec = 6;
-        else
-          aml_digital_codec = 0;
+        case AE_FMT_DTSHD:
+          aml_digital_codec = 8;
+          break;
+
+        case AE_FMT_TRUEHD:
+          aml_digital_codec = 7;
+          break;
+
+        default:
+          break;
+      }
     }
+
+    aml_set_audio_passthrough(m_passthrough);
     SysfsUtils::SetInt("/sys/class/audiodsp/digital_codec", aml_digital_codec);
   }
 #endif
@@ -1626,6 +1652,14 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
     if (snd_pcm_hw_params_test_format(pcmhandle, hwparams, fmt) >= 0)
       info.m_dataFormats.push_back(i);
   }
+
+#if defined(HAS_LIBAMCODEC)
+  if (aml_present())
+  {
+    info.m_displayNameExtra = "HDMI";
+    info.m_deviceType = AE_DEVTYPE_HDMI;
+  }
+#endif
 
   if (info.m_deviceType == AE_DEVTYPE_HDMI)
   {
