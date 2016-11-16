@@ -728,26 +728,30 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   unsigned int sampleRate   = inconfig.sampleRate;
 
 #if defined(HAS_LIBAMCODEC)
-  // alsa/kernel lies, so map everything to 44100 or 48000
-  switch(sampleRate)
+  /* Amlogic supports 44.1Khz, 48Khz, 88.2Khz, 96Khz, 176.4Khz, and 192Khz.
+     Remap unsupported frequencies. */
+  if (aml_present())
   {
-    case 5512:
-    case 11025:
-    case 22050:
-    case 88200:
-    case 176400:
-      sampleRate = 44100;
-      break;
-    case 8000:
-    case 16000:
-    case 24000:
-    case 32000:
-    case 64000:
-    case 96000:
-    case 192000:
-    case 384000:
-      sampleRate = 48000;
-      break;
+    switch(sampleRate)
+    {
+      case 5512:
+      case 11025:
+      case 22050:
+        sampleRate = 44100;
+        break;
+      case 8000:
+      case 16000:
+      case 24000:
+      case 32000:
+        sampleRate = 48000;
+        break;
+      case 64000:
+        sampleRate = 96000;
+        break;
+      case 384000:
+        sampleRate = 192000;
+        break;
+    }
   }
 #endif
 
