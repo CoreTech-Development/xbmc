@@ -27,9 +27,6 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
-#if defined(HAS_LIBAMCODEC)
-#include <unistd.h>
-#endif
 
 #include "AESinkALSA.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -89,6 +86,7 @@ static unsigned int ALSASampleRateList[] =
   0
 };
 
+#if defined(HAS_LIBAMCODEC)
 static int CheckNP2(unsigned x)
 {
     --x;
@@ -99,7 +97,7 @@ static int CheckNP2(unsigned x)
     x |= x >> 16;
     return ++x;
 }
-
+#endif
 
 CAESinkALSA::CAESinkALSA() :
   m_bufferSize(0),
@@ -543,61 +541,10 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 #if defined(HAS_LIBAMCODEC)
   if (aml_present())
   {
-    int aml_digital_codec = 0;
-
-    if (m_passthrough)
-    {
-      /* Open 2 channels at device 0 to enable output to HDMI */
-      ALSAConfig m_inconfig, m_outconfig;
-      snd_config_t *config;
-      m_inconfig = inconfig;
-      m_inconfig.channels = 2;
-      snd_config_copy(&config, snd_config);
-      if (access("/proc/asound/AMLM8AUDIO", R_OK) == 0)
-      {
-        OpenPCMDevice("hw:AMLM8AUDIO,0", "", m_inconfig.channels, &m_pcm, config);
-      } else {
-        OpenPCMDevice("hw:AMLDUMMYCODEC,0", "", m_inconfig.channels, &m_pcm, config);
-      }
-      snd_config_delete(config);
-      InitializeHW(m_inconfig, m_outconfig);
-
-      if (access("/proc/asound/AMLM8AUDIO", R_OK) == 0)
-      {
-        /* Passthrough is supported only by device 1 */
-        device = "hw:AMLM8AUDIO,1";
-      }
-
-      switch(format.m_dataFormat)
-      {
-        case AE_FMT_AC3:
-          aml_digital_codec = 2;
-          break;
-
-        case AE_FMT_DTS:
-          aml_digital_codec = 3;
-          break;
-
-        case AE_FMT_EAC3:
-          aml_digital_codec = 4;
-          inconfig.sampleRate = 48000;
-          break;
-
-        case AE_FMT_DTSHD:
-          aml_digital_codec = 8;
-          break;
-
-        case AE_FMT_TRUEHD:
-          aml_digital_codec = 7;
-          break;
-
-        default:
-          break;
-      }
-    }
-
     aml_set_audio_passthrough(m_passthrough);
-    SysfsUtils::SetInt("/sys/class/audiodsp/digital_codec", aml_digital_codec);
+#if !defined(__aarch64__)
+    device = "default";
+#endif
   }
 #endif
 
@@ -1463,6 +1410,11 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
     if (snd_card_get_name(cardNr, &cardName) == 0)
       info.m_displayName = cardName;
 
+#if defined(HAS_LIBAMCODEC) && !defined(__aarch64__)
+    if (aml_present())
+      info.m_deviceType = AE_DEVTYPE_IEC958;
+#endif
+
     if (info.m_deviceType == AE_DEVTYPE_HDMI && info.m_displayName.size() > 5 &&
         info.m_displayName.substr(info.m_displayName.size()-5) == " HDMI")
     {
@@ -1656,14 +1608,6 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
     if (snd_pcm_hw_params_test_format(pcmhandle, hwparams, fmt) >= 0)
       info.m_dataFormats.push_back(i);
   }
-
-#if defined(HAS_LIBAMCODEC)
-  if (aml_present())
-  {
-    info.m_displayNameExtra = "HDMI";
-    info.m_deviceType = AE_DEVTYPE_HDMI;
-  }
-#endif
 
   if (info.m_deviceType == AE_DEVTYPE_HDMI)
   {
