@@ -319,10 +319,8 @@ bool aml_IsHdmiConnected()
 {
   int hpd_state;
   SysfsUtils::GetInt("/sys/class/amhdmitx/amhdmitx0/hpd_state", hpd_state);
-  if (hpd_state == 2)
-  {
+  if (hpd_state != 0)
     return 1;
-  }
 
   return 0;
 }
