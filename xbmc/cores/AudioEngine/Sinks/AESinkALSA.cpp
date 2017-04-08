@@ -686,6 +686,35 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   snd_pcm_hw_params_set_access(m_pcm, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
 
   unsigned int sampleRate   = inconfig.sampleRate;
+
+#if defined(HAS_LIBAMCODEC)
+  /* Amlogic supports 44.1Khz, 48Khz, 88.2Khz, 96Khz, 176.4Khz, and 192Khz.
+     Remap unsupported frequencies. */
+  if (aml_present())
+  {
+    switch(sampleRate)
+    {
+      case 5512:
+      case 11025:
+      case 22050:
+        sampleRate = 44100;
+        break;
+      case 8000:
+      case 16000:
+      case 24000:
+      case 32000:
+        sampleRate = 48000;
+        break;
+      case 64000:
+        sampleRate = 96000;
+        break;
+      case 384000:
+        sampleRate = 192000;
+        break;
+    }
+  }
+#endif
+
   snd_pcm_hw_params_set_rate_near    (m_pcm, hw_params, &sampleRate, NULL);
 
   unsigned int channelCount = inconfig.channels;
