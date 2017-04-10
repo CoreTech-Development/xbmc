@@ -28,6 +28,7 @@
 class CAMLCodec;
 struct frame_queue;
 struct mpeg2_sequence;
+struct h264_sequence;
 class CBitstreamParser;
 class CBitstreamConverter;
 
@@ -101,6 +102,8 @@ protected:
   float           m_aspect_ratio;
   mpeg2_sequence *m_mpeg2_sequence;
   double          m_mpeg2_sequence_pts;
+  h264_sequence  *m_h264_sequence;
+  double          m_h264_sequence_pts;
   bool            m_drop;
   bool            m_has_keyframe;
 
