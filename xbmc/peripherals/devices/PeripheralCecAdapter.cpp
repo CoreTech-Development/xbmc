@@ -1295,6 +1295,20 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 
   m_configuration.bPowerOffOnStandby = config.bPowerOffOnStandby;
 
+#if defined(CEC_DOUBLE_TAP_TIMEOUT_MS_OLD)
+  m_configuration.iDoubleTapTimeout50Ms = config.iDoubleTapTimeout50Ms;
+  bChanged |= SetSetting("double_tap_timeout_ms", (int)m_configuration.iDoubleTapTimeout50Ms * 50);
+#else
+  m_configuration.iDoubleTapTimeoutMs = config.iDoubleTapTimeoutMs;
+  bChanged |= SetSetting("double_tap_timeout_ms", (int)m_configuration.iDoubleTapTimeoutMs);
+#endif
+
+  m_configuration.iButtonRepeatRateMs = config.iButtonRepeatRateMs;
+  bChanged |= SetSetting("button_repeat_rate_ms", (int)m_configuration.iButtonRepeatRateMs);
+
+  m_configuration.iButtonReleaseDelayMs = config.iButtonReleaseDelayMs;
+  bChanged |= SetSetting("button_release_delay_ms", (int)m_configuration.iButtonReleaseDelayMs);
+
   m_configuration.iFirmwareVersion = config.iFirmwareVersion;
 
   memcpy(m_configuration.strDeviceLanguage, config.strDeviceLanguage, 3);
@@ -1394,6 +1408,8 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 #else
   // backwards compatibility. will be removed once the next major release of libCEC is out
   m_configuration.iDoubleTapTimeoutMs = GetSettingInt("double_tap_timeout_ms");
+  m_configuration.iButtonRepeatRateMs = GetSettingInt("button_repeat_rate_ms");
+  m_configuration.iButtonReleaseDelayMs = GetSettingInt("button_release_delay_ms");
 #endif
 
   if (GetSettingBool("pause_playback_on_deactivate"))
