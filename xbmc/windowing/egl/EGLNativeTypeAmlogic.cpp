@@ -150,6 +150,8 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
   if (res.strId != mode)
     result = SetDisplayResolution(res.strId.c_str());
 
+  DealWithScale(res);
+
   RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
   aml_handle_display_stereo_mode(stereo_mode);
   
@@ -228,6 +230,29 @@ void CEGLNativeTypeAmlogic::SetupVideoScaling(const char *mode)
   }
 
   SysfsUtils::SetInt("/sys/class/graphics/fb0/blank", 0);
+}
+
+void CEGLNativeTypeAmlogic::DealWithScale(const RESOLUTION_INFO &res)
+{
+  if (res.iScreenWidth > res.iWidth && res.iScreenHeight > res.iHeight)
+    EnableFreeScale(res);
+  else
+    DisableFreeScale();
+}
+
+void CEGLNativeTypeAmlogic::EnableFreeScale(const RESOLUTION_INFO &res)
+{
+  char fsaxis_str[256] = {0};
+  sprintf(fsaxis_str, "0 0 %d %d", res.iWidth-1, res.iHeight-1);
+  char waxis_str[256] = {0};
+  sprintf(waxis_str, "0 0 %d %d", res.iScreenWidth-1, res.iScreenHeight-1);
+
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 0);
+  SysfsUtils::SetString("/sys/class/graphics/fb0/free_scale_axis", fsaxis_str);
+  SysfsUtils::SetString("/sys/class/graphics/fb0/window_axis", waxis_str);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/scale_width", res.iWidth);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/scale_height", res.iHeight);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 0x10001);
 }
 
 void CEGLNativeTypeAmlogic::DisableFreeScale()
