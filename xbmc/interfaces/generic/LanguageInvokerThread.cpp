@@ -50,6 +50,9 @@ bool CLanguageInvokerThread::execute(const std::string &script, const std::vecto
   m_args = arguments;
 
   Create();
+  /* low prio */
+  SetPriority(GetPriority()-1);
+
   return true;
 }
 
