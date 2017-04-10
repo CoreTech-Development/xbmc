@@ -690,7 +690,7 @@ void CDVDInputStreamPVRManager::UpdateStreamMap()
     dStream->language[1] = stream.strLanguage[1];
     dStream->language[2] = stream.strLanguage[2];
     dStream->language[3] = stream.strLanguage[3];
-    dStream->realtime = true;
+    dStream->realtime = false;
 
     m_newStreamMap[stream.iPID] = dStream;
   }
