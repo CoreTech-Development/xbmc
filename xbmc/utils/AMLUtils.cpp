@@ -504,7 +504,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 59.940;
     res->dwFlags = D3DPRESENTFLAG_INTERLACED;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "4k2ksmpte") || StringUtils::EqualsNoCase(fromMode, "smpte24hz"))
+  else if (StringUtils::EqualsNoCase(fromMode, "4k2ksmpte") || StringUtils::StartsWith(fromMode, "smpte24hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -513,7 +513,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 24;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "4k2k23hz") || StringUtils::EqualsNoCase(fromMode, "2160p23hz"))
+  else if (StringUtils::EqualsNoCase(fromMode, "4k2k23hz") || StringUtils::StartsWith(fromMode, "2160p23hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -522,7 +522,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 23.976;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "4k2k24hz") || StringUtils::EqualsNoCase(fromMode, "2160p24hz"))
+  else if (StringUtils::EqualsNoCase(fromMode, "4k2k24hz") || StringUtils::StartsWith(fromMode, "2160p24hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -531,7 +531,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 24;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "4k2k25hz") || StringUtils::EqualsNoCase(fromMode, "2160p25hz"))
+  else if (StringUtils::EqualsNoCase(fromMode, "4k2k25hz") || StringUtils::StartsWith(fromMode, "2160p25hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -540,7 +540,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 25;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "4k2k29hz") || StringUtils::EqualsNoCase(fromMode, "2160p29hz"))
+  else if (StringUtils::EqualsNoCase(fromMode, "4k2k29hz") || StringUtils::StartsWith(fromMode, "2160p29hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -549,7 +549,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 29.970;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "4k2k30hz") || StringUtils::EqualsNoCase(fromMode, "2160p30hz"))
+  else if (StringUtils::EqualsNoCase(fromMode, "4k2k30hz") || StringUtils::StartsWith(fromMode, "2160p30hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -558,7 +558,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 30;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "2160p50hz420"))
+  else if (StringUtils::StartsWith(fromMode, "2160p50hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
@@ -567,7 +567,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->fRefreshRate = 50;
     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
-  else if (StringUtils::EqualsNoCase(fromMode, "2160p60hz420"))
+  else if (StringUtils::StartsWith(fromMode, "2160p60hz"))
   {
     res->iWidth = 1920;
     res->iHeight= 1080;
