@@ -361,6 +361,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_hideCPUserial;
     bool m_hideCPUtemp;
 
+    bool m_enableAddonsByDefault;
+
     //! \brief Returns a list of music extension for filtering in the GUI
     std::string GetMusicExtensions() const;
 
