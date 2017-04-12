@@ -28,6 +28,7 @@
 #include "addons/AddonManager.h"
 #include "dbwrappers/dataset.h"
 #include "filesystem/SpecialProtocol.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/log.h"
@@ -341,9 +342,15 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
     BeginTransaction();
     for (const auto& id : added)
     {
-      int enable = 0;
+      int enable = 0, skip = 0;
 
-      if (system.find(id) != system.end() || optional.find(id) != optional.end())
+      if (StringUtils::StartsWith(id, "adsp.") || StringUtils::StartsWith(id, "audiodecoder.") || StringUtils::StartsWith(id, "audioencoder.") || \
+        StringUtils::StartsWith(id, "game.") || StringUtils::StartsWith(id, "imagedecoder.") || StringUtils::StartsWith(id, "inputstream.") || \
+        StringUtils::StartsWith(id, "pvr.") || StringUtils::StartsWith(id, "screensaver.") || StringUtils::StartsWith(id, "screensavers.") || \
+        StringUtils::StartsWith(id, "vfs.") || StringUtils::StartsWith(id, "visualization."))
+        skip = 1;
+
+      if ((g_advancedSettings.m_enableAddonsByDefault && ! skip) || system.find(id) != system.end() || optional.find(id) != optional.end())
         enable = 1;
 
       m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) "

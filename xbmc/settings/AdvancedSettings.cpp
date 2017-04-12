@@ -412,6 +412,8 @@ void CAdvancedSettings::Initialize()
   m_hideCPUrev = false;
   m_hideCPUserial = false;
   m_hideCPUtemp = false;
+
+  m_enableAddonsByDefault = false;
 }
 
 bool CAdvancedSettings::Load()
@@ -881,6 +883,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   XMLUtils::GetBoolean(pRootElement, "hidecpurev", m_hideCPUrev);
   XMLUtils::GetBoolean(pRootElement, "hidecpuserial", m_hideCPUserial);
   XMLUtils::GetBoolean(pRootElement, "hidecputemp", m_hideCPUtemp);
+
+  XMLUtils::GetBoolean(pRootElement, "enableaddonsbydefault", m_enableAddonsByDefault);
 
   // EPG
   pElement = pRootElement->FirstChildElement("epg");
