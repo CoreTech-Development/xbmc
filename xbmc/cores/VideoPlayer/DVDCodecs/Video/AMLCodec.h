@@ -48,6 +48,7 @@ public:
 
   bool          GetPicture(DVDVideoPicture* pDvdVideoPicture);
   void          SetSpeed(int speed);
+  void          SetDrain(bool drain){m_drain = drain;};
   void          SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
   void          SetVideoRate(int videoRate);
   int64_t       GetCurPts() const { return m_cur_pts + m_start_adj; }
@@ -79,6 +80,8 @@ private:
   DllLibAmCodec   *m_dll;
   bool             m_opened;
   bool             m_ptsIs64us;
+  bool             m_drain;
+  int              m_noPictureLoop;
   am_private_t    *am_private;
   CDVDStreamInfo   m_hints;
   int              m_speed;
