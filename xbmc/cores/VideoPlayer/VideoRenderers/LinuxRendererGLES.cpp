@@ -52,7 +52,7 @@ extern "C" {
 #include "libswscale/swscale.h"
 }
 
-#if defined(__ARM_NEON__) && !defined(__LP64__)
+#if (defined(__ARM_NEON__) || defined(__ARM_NEON)) && !defined(__LP64__)
 #include "yuv2rgb.neon.h"
 #include "utils/CPUInfo.h"
 #endif
