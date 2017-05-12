@@ -428,12 +428,6 @@ void CDVDVideoCodecAmlogic::SetDropState(bool bDrop)
   //SysfsUtils::SetInt("/sys/class/video/freerun_mode", bDrop ? 1 : 0);
 }
 
-void CDVDVideoCodecAmlogic::SetCodecControl(int flags)
-{
-  if (m_Codec)
-    m_Codec->SetDrain((flags & DVD_CODEC_CTRL_DRAIN) != 0);
-}
-
 void CDVDVideoCodecAmlogic::SetSpeed(int iSpeed)
 {
   if (m_Codec)

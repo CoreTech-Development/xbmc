@@ -78,7 +78,6 @@ public:
   virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetSpeed(int iSpeed);
   virtual void SetDropState(bool bDrop);
-  virtual void SetCodecControl(int flags);
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
 
 protected:
