@@ -100,6 +100,10 @@
 
 #include "utils/StringUtils.h"
 
+#if defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
+#endif
+
 // In milliseconds
 #define MINIMUM_TIME_BETWEEN_READS 500
 
@@ -637,7 +641,10 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
     if (!ret)
     {
       ret = fscanf(m_fProcTemperature, "%d", &value);
-      value = value / 1000;
+#if defined(HAS_LIBAMCODEC) && defined(__arm__)
+      if (!aml_present())
+#endif
+        value = value / 1000;
       scale = 'c';
       ret++;
     }
