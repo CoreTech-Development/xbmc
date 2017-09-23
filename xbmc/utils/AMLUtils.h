@@ -20,6 +20,7 @@
  */
 
 #include "guilib/Resolution.h"
+#include "rendering/RenderSystem.h"
 
 enum AML_DEVICE_TYPE
 {
@@ -60,4 +61,5 @@ AML_SUPPORT_H264_4K2K aml_support_h264_4k2k();
 bool aml_support_vp9();
 void aml_set_audio_passthrough(bool passthrough);
 bool aml_IsHdmiConnected();
+void aml_handle_display_stereo_mode(RENDER_STEREO_MODE stereo_mode);
 bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res);

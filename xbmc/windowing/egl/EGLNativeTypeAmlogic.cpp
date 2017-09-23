@@ -19,6 +19,7 @@
  */
 
 #include "EGLNativeTypeAmlogic.h"
+#include "guilib/GraphicContext.h"
 #include "guilib/gui3d.h"
 #include "utils/AMLUtils.h"
 #include "utils/StringUtils.h"
@@ -151,6 +152,9 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
 
   DealWithScale(res);
 
+  RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
+  aml_handle_display_stereo_mode(stereo_mode);
+  
   return result;
 }
 

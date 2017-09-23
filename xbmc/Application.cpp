@@ -331,9 +331,9 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
     case XBMC_VIDEORESIZE:
       if (g_windowManager.Initialized())
       {
-        g_Windowing.SetWindowResolution(newEvent.resize.w, newEvent.resize.h);
         if (!g_advancedSettings.m_fullScreen)
         {
+          g_Windowing.SetWindowResolution(newEvent.resize.w, newEvent.resize.h);
           g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
           CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.w);
           CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_HEIGHT, newEvent.resize.h);
@@ -3275,14 +3275,6 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     return PLAYBACK_FAIL;
   }
 
-  // a disc image might be Blu-Ray disc
-  if (item.IsBDFile() || item.IsDiscImage())
-  {
-    //check if we must show the simplified bd menu
-    if (!CGUIDialogSimpleMenu::ShowPlaySelection(const_cast<CFileItem&>(item)))
-      return PLAYBACK_CANCELED;
-  }
-
 #ifdef HAS_UPNP
   if (URIUtils::IsUPnP(item.GetPath()))
   {
@@ -3378,6 +3370,14 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
 
       dbs.Close();
     }
+  }
+
+  // a disc image might be Blu-Ray disc
+  if (!(options.startpercent > 0.0f || options.starttime > 0.0f) && (item.IsBDFile() || item.IsDiscImage()))
+  {
+    //check if we must show the simplified bd menu
+    if (!CGUIDialogSimpleMenu::ShowPlaySelection(const_cast<CFileItem&>(item)))
+      return PLAYBACK_CANCELED;
   }
 
   // this really aught to be inside !bRestart, but since PlayStack
