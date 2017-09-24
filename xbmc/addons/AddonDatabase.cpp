@@ -345,7 +345,9 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
       int enable = 0, skip = 0;
 
       if (StringUtils::StartsWith(id, "adsp.") || StringUtils::StartsWith(id, "audiodecoder.") || StringUtils::StartsWith(id, "audioencoder.") || \
-        StringUtils::StartsWith(id, "inputstream.") || StringUtils::StartsWith(id, "pvr."))
+        StringUtils::StartsWith(id, "game.") || StringUtils::StartsWith(id, "imagedecoder.") || StringUtils::StartsWith(id, "inputstream.") || \
+        StringUtils::StartsWith(id, "pvr.") || StringUtils::StartsWith(id, "screensaver.") || StringUtils::StartsWith(id, "screensavers.") || \
+        StringUtils::StartsWith(id, "vfs.") || StringUtils::StartsWith(id, "visualization."))
         skip = 1;
 
       if ((g_advancedSettings.m_enableAddonsByDefault && ! skip) || system.find(id) != system.end() || optional.find(id) != optional.end())
