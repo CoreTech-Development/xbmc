@@ -51,6 +51,7 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic(CProcessInfo &processInfo) : CDVDVi
   m_framerate(0.0),
   m_video_rate(0),
   m_mpeg2_sequence(NULL),
+  m_h264_sequence(NULL),
   m_drop(false),
   m_has_keyframe(false),
   m_bitparser(NULL),
@@ -120,6 +121,12 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         // 4K is supported only on Amlogic S802/S812 chip
         return false;
       }
+      m_h264_sequence_pts = 0;
+      m_h264_sequence = new h264_sequence;
+      m_h264_sequence->width  = m_hints.width;
+      m_h264_sequence->height = m_hints.height;
+      m_h264_sequence->ratio  = m_hints.aspect;
+
       m_pFormatName = "am-h264";
       // convert h264-avcC to h264-annex-b as h264-avcC
       // under streamers can have issues when seeking.
@@ -271,6 +278,8 @@ void CDVDVideoCodecAmlogic::Dispose(void)
     m_videobuffer.iFlags = 0;
   if (m_mpeg2_sequence)
     delete m_mpeg2_sequence, m_mpeg2_sequence = NULL;
+  if (m_h264_sequence)
+    delete m_h264_sequence, m_h264_sequence = NULL;
 
   if (m_bitstream)
     delete m_bitstream, m_bitstream = NULL;
@@ -361,6 +370,10 @@ bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // check for mpeg2 aspect ratio changes
   if (m_mpeg2_sequence && pDvdVideoPicture->pts >= m_mpeg2_sequence_pts)
     m_aspect_ratio = m_mpeg2_sequence->ratio;
+
+  // check for h264 aspect ratio changes
+  if (m_h264_sequence && pDvdVideoPicture->pts >= m_h264_sequence_pts)
+    m_aspect_ratio = m_h264_sequence->ratio;
 
   pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
   pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
@@ -528,6 +541,24 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double 
       m_hints.aspect   = m_mpeg2_sequence->ratio;
     }
     return;
+  }
+
+  // h264 aspect ratio handling
+  if (m_h264_sequence)
+  {
+    // probe demux for SPS NAL and decode aspect ratio
+    if (CBitstreamConverter::h264_sequence_header(pData, iSize, m_h264_sequence))
+    {
+      m_h264_sequence_pts = pts;
+      if (m_h264_sequence_pts == DVD_NOPTS_VALUE)
+          m_h264_sequence_pts = dts;
+
+      CLog::Log(LOGDEBUG, "%s: detected h264 aspect ratio(%f)",
+        __MODULE_NAME__, m_h264_sequence->ratio);
+      m_hints.width    = m_h264_sequence->width;
+      m_hints.height   = m_h264_sequence->height;
+      m_hints.aspect   = m_h264_sequence->ratio;
+    }
   }
 
   // everything else
